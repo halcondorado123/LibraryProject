@@ -1,0 +1,75 @@
+﻿@model Login
+
+@{
+    Layout = "_PartialLayout";
+}
+
+<style>
+    /* Estilos para la pantalla dividida */
+    .split-container {
+        display: flex;
+        height: 100vh;
+    }
+
+    .left-column {
+        flex: 1;
+        background: linear-gradient(45deg, #0000 calc(25%/3), #2f6328 0 calc(50%/3), #0000 0 calc(250%/3), #2f6328 0 calc(275%/3), #0000 0), linear-gradient(45deg, #2f6328 calc(25%/3), #0000 0 calc(50%/3), #2f6328 0 25%, #0000 0 75%, #2f6328 0 calc(250%/3), #0000 0 calc(275%/3), #2f6328 0), linear-gradient(-45deg, #0000 calc(25%/3), #2f6328 0 calc(50%/3), #0000 0 calc(250%/3), #2f6328 0 calc(275%/3), #0000 0), linear-gradient(-45deg, #2f6328 calc(25%/3), #0000 0 calc(50%/3), #2f6328 0 25%, #0000 0 75%, #2f6328 0 calc(250%/3), #0000 0 calc(275%/3), #2f6328 0), #3ed05b;
+        background-size: 76px 76px;
+        background-position: 0 0, 38px 38px;
+        background-repeat: repeat; /* Asegurando que el patrón se repita */
+    }
+
+
+    .right-column {
+        flex: 1;
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        background-color: white;
+    }
+
+    .login-container {
+        width: 100%;
+        max-width: 350px;
+        text-align: center;
+    }
+
+        .login-container h2 {
+            margin-bottom: 20px;
+        }
+
+    .form-group {
+        margin-bottom: 15px;
+    }
+
+    .btn-login {
+        width: 100%;
+    }
+</style>
+
+<div class="split-container">
+    <div class="left-column"></div>
+
+    <div class="right-column">
+        <div class="login-container">
+            <h2>Iniciar Sesión</h2>
+            <form asp-action="Login" method="post">
+                <input type="hidden" asp-for="ReturnUrl" />
+
+                <div class="form-group">
+                    <label asp-for="Email"></label>
+                    <input asp-for="Email" class="form-control" placeholder="Ingresa tu email" />
+                </div>
+
+                <div class="form-group">
+                    <label asp-for="Password"></label>
+                    <input asp-for="Password" type="password" class="form-control" placeholder="Ingresa tu contraseña" />
+                </div>
+
+                <div class="text-danger" asp-validation-summary="All"></div>
+
+                <button class="btn btn-primary btn-login mt-3" type="submit">Iniciar Sesión</button>
+            </form>
+        </div>
+    </div>
+</div>

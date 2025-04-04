@@ -1,0 +1,28 @@
+﻿@model IEnumerable<System.Security.Claims.Claim>
+<h2 class="bg-primary m-1 p-1 text-white">Notificaciones</h2>
+<a asp-action="Create" class="btn btn-secondary">Crear Reclamo/Claim</a>
+
+<table class="table table-sm table-bordered">
+    <tr>
+        <th>Asunto</th>
+        <th>Emisor</th>
+        <th>Tipo</th>
+        <th>Valor</th>
+    </tr>
+
+    @foreach (var claim in Model.OrderBy(x => x.Type))
+    {
+            <tr>
+                <td>@claim.Subject.Name</td>
+                <td>@claim.Issuer</td>
+                <td>@claim.Type</td>
+                <td>@claim.Value</td>
+                <td>
+                    <form asp-action="Delete" method="Post">
+                        <input type="hidden" name="ClaimValues" value="@claim.Type;@claim.Value;@claim.Issuer" />
+                        <button type="submit" class="btn btn-sm btn-danger">Eliminar</button>
+                    </form>
+                </td>
+            </tr>
+    }
+</table>

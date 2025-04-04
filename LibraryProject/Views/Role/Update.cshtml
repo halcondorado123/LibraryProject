@@ -1,0 +1,92 @@
+﻿@model RoleEditar
+
+@{
+    Layout = "~/Views/Shared/_Layout.cshtml";
+    ViewData["Title"] = "Actualizar Rol";
+}
+
+<div class="container-fluid py-4">
+    <!-- Encabezado de la página -->
+    <div class="page-header">
+        <div class="d-flex justify-content-between align-items-center">
+            <h1 class="bg-info text-white p-2 rounded">Actualizar Rol</h1>
+            <a asp-action="Index" class="btn btn-secondary">
+                <i class="fas fa-arrow-left me-1"></i> Atrás
+            </a>
+        </div>
+    </div>
+
+    <div class="card shadow-sm p-4">
+        <div asp-validation-summary="All" class="alert alert-danger"></div>
+        <form method="post">
+            <input type="hidden" name="NombreRol" value="@Model.Role.Name" />
+            <input type="hidden" name="IdRol" value="@Model.Role.Id" />
+
+            <!-- Añadir Usuarios al Rol -->
+            <h2 class="bg-primary text-white p-2 rounded">Añadir a @Model.Role.Name</h2>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead class="bg-primary text-white">
+                        <tr>
+                            <th>Usuario</th>
+                            <th class="text-center">Añadir</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.NonMembers.Any())
+                        {
+                            <tr><td colspan="2" class="text-center">No hay usuarios disponibles para agregar.</td></tr>
+                        }
+                        else
+                        {
+                            @foreach (AppUsuario usuario in Model.NonMembers)
+                            {
+                                <tr>
+                                    <td class="align-middle">@usuario.UserName</td>
+                                    <td class="align-middle text-center">
+                                        <input type="checkbox" name="AgregarIds" value="@usuario.Id">
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- Eliminar Usuarios del Rol -->
+            <h2 class="bg-danger text-white p-2 rounded">Eliminar de @Model.Role.Name</h2>
+            <div class="table-responsive">
+                <table class="table table-hover table-striped">
+                    <thead class="bg-danger text-white">
+                        <tr>
+                            <th>Usuario</th>
+                            <th class="text-center">Eliminar</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @if (!Model.Members.Any())
+                        {
+                            <tr><td colspan="2" class="text-center">No hay usuarios para eliminar.</td></tr>
+                        }
+                        else
+                        {
+                            @foreach (AppUsuario usuario in Model.Members)
+                            {
+                                <tr>
+                                    <td class="align-middle">@usuario.UserName</td>
+                                    <td class="align-middle text-center">
+                                        <input type="checkbox" name="EliminarIds" value="@usuario.Id">
+                                    </td>
+                                </tr>
+                            }
+                        }
+                    </tbody>
+                </table>
+            </div>
+
+            <button type="submit" class="btn btn-primary mt-3">
+                <i class="fas fa-save me-1"></i> Guardar
+            </button>
+        </form>
+    </div>
+</div>

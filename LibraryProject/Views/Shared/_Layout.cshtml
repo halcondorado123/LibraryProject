@@ -1,0 +1,230 @@
+﻿<!DOCTYPE html>
+<html>
+<head>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title</title>
+    <link href="~/twitter-bootstrap/css/bootstrap.css" rel="stylesheet" />
+    <style>
+        .icon-image {
+            width: 40px; /* Ajusta el tamaño según sea necesario */
+            height: 40px; /* Ajusta el tamaño según sea necesario */
+            margin: auto 10px;
+            object-fit: cover;
+            border-radius: 50%; /* Hace que la imagen sea circular */
+        }
+
+        /* Estilo del sidebar */
+        .sidebar {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 280px;
+            height: 100vh;
+            flex: 1;
+            background: linear-gradient(45deg, #0000 calc(25%/3), #2f6328 0 calc(50%/3), #0000 0 calc(250%/3), #2f6328 0 calc(275%/3), #0000 0), linear-gradient(45deg, #2f6328 calc(25%/3), #0000 0 calc(50%/3), #2f6328 0 25%, #0000 0 75%, #2f6328 0 calc(250%/3), #0000 0 calc(275%/3), #2f6328 0), linear-gradient(-45deg, #0000 calc(25%/3), #2f6328 0 calc(50%/3), #0000 0 calc(250%/3), #2f6328 0 calc(275%/3), #0000 0), linear-gradient(-45deg, #2f6328 calc(25%/3), #0000 0 calc(50%/3), #2f6328 0 25%, #0000 0 75%, #2f6328 0 calc(250%/3), #0000 0 calc(275%/3), #2f6328 0), #3ed05b;
+            background-size: 76px 76px;
+            background-position: 0 0, 38px 38px;
+            background-repeat: repeat; /* Asegurando que el patrón se repita */
+            padding: 1rem;
+            z-index: 100;
+            transition: transform 0.3s ease; /* Transición suave para el movimiento */
+        }
+
+        /* Estilo para ocultar el sidebar */
+        .sidebar-hidden {
+            transform: translateX(-100%); /* Desplaza el sidebar fuera de la pantalla */
+        }
+
+        /* Estilo para mostrar el sidebar */
+        .sidebar-visible {
+            transform: translateX(0); /* Muestra el sidebar en su posición original */
+        }
+
+        /* Estilo para el botón de toggle */
+        .toggle-btn {
+            position: absolute;
+            top: 50%; /* Centra verticalmente */
+            right: -20px; /* Mueve el botón hacia el borde derecho del sidebar */
+            transform: translateY(-50%); /* Ajusta la posición para centrar verticalmente */
+            z-index: 110; /* Asegura que el botón esté encima del sidebar */
+            border-radius: 50%; /* Hace que el botón sea redondo */
+            width: 40px; /* Ancho del botón */
+            height: 40px; /* Altura del botón */
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #007bff; /* Color de fondo del botón */
+            color: white; /* Color del ícono */
+            border: none; /* Elimina el borde del botón */
+            cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
+            transition: background-color 0.3s ease; /* Transición suave para el color de fondo */
+        }
+
+            /* Cambia el color del botón al pasar sobre él */
+            .toggle-btn:hover {
+                background-color: #0056b3; /* Cambia el color al pasar sobre el botón */
+            }
+
+        /* Icono de flecha hacia la derecha cuando el sidebar está oculto */
+        .sidebar-hidden .toggle-btn .bi-chevron-left {
+            display: none; /* Oculta la flecha hacia la izquierda */
+        }
+
+        /* Icono de flecha hacia la izquierda cuando el sidebar está visible */
+        .sidebar-visible .toggle-btn .bi-chevron-right {
+            display: none; /* Oculta la flecha hacia la derecha */
+        }
+
+        .content-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center; /* Centra todo el contenido dentro */
+            justify-content: center;
+        }
+
+        /* Ajusta el margen y el ancho del contenedor cuando el sidebar está oculto */
+        .sidebar-hidden ~ .content-container {
+            margin-left: 0; /* Elimina el margen izquierdo cuando el sidebar está oculto */
+            width: 100%; /* Ajusta el ancho al 100% cuando el sidebar está oculto */
+        }
+        /* CSS para ocultar los submenús */
+        .sub-menu {
+            display: none; /* Oculta el submenú por defecto */
+            padding-left: 1rem; /* Añade un margen izquierdo para el submenú */
+        }
+
+            .sub-menu.show {
+                display: block; /* Muestra el submenú cuando se le añade la clase .show */
+            }
+
+        .nav-link.active {
+            background-color: #495057; /* Ajusta el color de fondo activo */
+        }
+
+        .table-container {
+            display: flex;
+            justify-content: center; /* Centra la tabla horizontalmente */
+            align-items: center; /* Centra la tabla verticalmente */
+            width: 100%;
+            padding: 20px;
+        }
+
+            .table-container table {
+                max-width: 90%; /* Controla el ancho máximo de la tabla */
+            }
+
+
+    </style>
+</head>
+<body>
+    <!-- Button to toggle the sidebar -->
+    <div class="sidebar d-flex flex-column flex-shrink-0 text-white bg-dark sidebar-visible" id="sidebar">
+        <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none sidebar-header">
+            <!-- Imagen pequeña a la izquierda del texto -->
+            <img src="/img/istockphoto-845329690-612x612.jpg" alt="Icon" class="icon-image" />
+            <span class="fs-4" style="margin: auto 15px;">LibraryApp</span>
+        </a>
+        <hr>
+        <ul class="nav nav-pills flex-column mb-auto">
+            <li class="nav-item">
+                <a asp-controller="Home" asp-action="Index" class="nav-link text-white">
+                    <svg class="bi me-2" width="16" height="16"><use xlink:href="#home"></use></svg>
+                    Inicio
+                </a>
+            </li>
+
+            <li class="nav-item">
+                <a href="#" class="nav-link text-white" id="userMenuLink">
+                    <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
+                    Usuario
+                </a>
+                <ul class="sub-menu">
+                    <li><a asp-controller="Admin" asp-action="Index" class="nav-link text-white">Busqueda</a></li>
+                    <li><a asp-controller="Admin" asp-action="Create" class="nav-link text-white">Crear Usuario</a></li>
+                    <li><a asp-controller="Admin" asp-action="Update" class="nav-link text-white">Modificar Usuario</a></li>
+                </ul>
+            </li>
+            <li class="nav-item">
+                <a asp-controller="Role" asp-action="Index" class="nav-link text-white">
+                    <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
+                    Roles Empleados
+                </a>
+            </li>
+            @* <li class="nav-item">
+                <a href="#" class="nav-link text-white">
+                    <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
+                    Cambiar contraseña
+                </a>
+            </li> *@
+        </ul>
+        <hr>
+        <div class="container mt-5">
+            <div class="dropdown">
+                <a href="#" class="d-flex align-items-center text-white text-decoration-none dropdown-toggle" id="dropdownUser1" data-bs-toggle="dropdown" aria-expanded="false">
+                    <img src="/img/free-user-icon-295-thumb.png" alt="" width="32" height="32" class="rounded-circle me-2">
+                    <strong>@User.Identity.Name</strong>
+                </a>
+                <ul class="dropdown-menu dropdown-menu-dark text-small shadow" aria-labelledby="dropdownUser1">
+                    <li><a class="dropdown-item disabled" href="#">New project...</a></li>
+                    <li><a class="dropdown-item disabled" href="#">Settings</a></li>
+                    <li><a class="dropdown-item disabled" href="#">Profile</a></li>
+                    <li><hr class="dropdown-divider"></li>
+                    @if (User?.Identity?.IsAuthenticated ?? false)
+                    {
+                        <li><a class="dropdown-item text-danger" asp-controller="Account" asp-action="Logout">Log Out</a></li>
+                    }
+                </ul>
+            </div>
+        </div>
+
+        <!-- Botón de toggle incrustado en el sidebar -->
+        <button class="toggle-btn" id="toggleSidebar">
+            <i class="bi bi-chevron-left"></i> <!-- Icono de flecha hacia la izquierda por defecto -->
+            <i class="bi bi-chevron-right"></i> <!-- Icono de flecha hacia la derecha cuando está oculto -->
+        </button>
+    </div>
+
+    <div class="content-container">
+        @RenderBody()
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.slim.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.10.5/font/bootstrap-icons.css" rel="stylesheet">
+    <script>
+        document.addEventListener('DOMContentLoaded', function () {
+            var sidebar = document.getElementById('sidebar');
+            var content = document.querySelector('.content-container'); // Asegúrate de usar el nombre correcto de la clase
+            var toggleButton = document.getElementById('toggleSidebar');
+            var userMenuLink = document.getElementById('userMenuLink');
+            var subMenu = userMenuLink.nextElementSibling; // Asumiendo que el submenú es el siguiente elemento en el DOM
+
+            // Configura el estado inicial del contenido
+            if (sidebar.classList.contains('sidebar-hidden')) {
+                content.style.marginLeft = '0'; // Ajusta cuando el sidebar está oculto
+            } else {
+                content.style.marginLeft = '280px'; // Ajusta cuando el sidebar está visible
+            }
+
+            // Maneja el evento de clic en el botón de toggle
+            toggleButton.addEventListener('click', function () {
+                if (sidebar.classList.contains('sidebar-visible')) {
+                    sidebar.classList.remove('sidebar-visible');
+                    sidebar.classList.add('sidebar-hidden');
+                    content.style.marginLeft = '0'; // Ajusta cuando el sidebar está oculto
+                } else {
+                    sidebar.classList.remove('sidebar-hidden');
+                    sidebar.classList.add('sidebar-visible');
+                    content.style.marginLeft = '280px'; // Ajusta cuando el sidebar está visible
+                }
+            });
+
+            // Maneja el evento de clic en el enlace del menú de usuario
+            userMenuLink.addEventListener('click', function () {
+                // Alterna la clase 'show' para mostrar u ocultar el submenú
+                subMenu.classList.toggle('show');
+            });
+        });
+    </script>
+</body>
+</html>
