@@ -1,6 +1,10 @@
+using LibraryProject.Infraestructure.Interface;
+using LibraryProject.Infraestructure.Repository;
 using LibraryProject.Models;
+using LibraryProject.Modules;
 using LibraryProject.Policies.CustomPolicies;
 using LibraryProject.Policies.IdentityPolicies;
+using LibraryProject.Transversal.Mapper;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
@@ -37,6 +41,8 @@ builder.Services.Configure<IdentityOptions>(options =>
 builder.Services.AddTransient<IPasswordValidator<AppUsuario>, PoliticaPassPersonalizada>();
 builder.Services.AddTransient<IUserValidator<AppUsuario>, PoliticaUsuarioEmailPersonalizada>();
 
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
 
 // -- Es importante registrar los servicio en esta seccion
 // Registrar la clase de autorizacion por IAuthorizationHandler con la clase o servicio ControladorPermitirUsuarios
@@ -52,6 +58,11 @@ builder.Services.ConfigureApplicationCookie(options => {
     options.SlidingExpiration = true;
 });
 
+
+// Mapper
+builder.Services.AddAutoMapper(typeof(MappingsProfile));
+// Injection
+builder.Services.AddInjection(builder.Configuration);
 
 // Politica de servicio 01
 builder.Services.AddAuthorization(options =>

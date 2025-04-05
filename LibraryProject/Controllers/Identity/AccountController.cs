@@ -3,7 +3,7 @@ using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LibraryProject.Controllers
+namespace LibraryProject.Controllers.Identity
 {
     public class AccountController : Controller
     {

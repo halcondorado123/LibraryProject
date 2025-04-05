@@ -2,7 +2,7 @@
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
-namespace LibraryProject.Controllers
+namespace LibraryProject.Controllers.Identity
 {
     public class AdminController : Controller
     {
@@ -19,7 +19,7 @@ namespace LibraryProject.Controllers
         public AdminController(UserManager<AppUsuario> userManager, IPasswordHasher<AppUsuario> passwordHash, IPasswordValidator<AppUsuario> passwordValidator, IUserValidator<AppUsuario> userValidator)
         {
             this.userManager = userManager;
-            this.passwordHasher = passwordHash;
+            passwordHasher = passwordHash;
             this.passwordValidator = passwordValidator;
             this.userValidator = userValidator;
         }
@@ -165,9 +165,9 @@ namespace LibraryProject.Controllers
                 }
 
                 usuario.Edad = edad;
-                Pais miPais;
-                Enum.TryParse(pais, out miPais);
-                usuario.Pais = miPais;
+                //Pais miPais;
+                //Enum.TryParse(pais, out miPais);
+                //usuario.Pais = miPais;
                 usuario.Salario = salario;
 
                 IdentityResult resultado = await userManager.UpdateAsync(usuario);

@@ -33,7 +33,7 @@ namespace LibraryProject.Domain.Entities.Library
 
             // Relación N:1
             [ForeignKey("BookId")]
-            public Book Book { get; set; } = null!;
+            public BookME Book { get; set; } = null!;
         }
     }
 }

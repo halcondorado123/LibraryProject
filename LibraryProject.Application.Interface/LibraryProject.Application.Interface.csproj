@@ -11,7 +11,8 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\LibraryProject.Domain.Entities\LibraryProject.Domain.Entities.csproj" />
+    <ProjectReference Include="..\LibraryProject.Application.DTO\LibraryProject.Application.DTO.csproj" />
+    <ProjectReference Include="..\LibraryProject.Transversal.Common\LibraryProject.Transversal.Common.csproj" />
   </ItemGroup>
 
 </Project>

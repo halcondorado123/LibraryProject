@@ -4,9 +4,10 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibraryProject.Infraestructure.Data.DbContext
+namespace LibraryProject.Transversal.Common
 {
-    internal class IdentityDbContext
+    public class Response<T> : ResponseGeneric<T>
     {
+
     }
 }

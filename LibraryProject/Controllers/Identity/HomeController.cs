@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Diagnostics;
 
-namespace LibraryProject.Controllers
+namespace LibraryProject.Controllers.Identity
 {
     public class HomeController : Controller
     {

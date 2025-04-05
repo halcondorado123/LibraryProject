@@ -4,7 +4,7 @@ using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.Security.Claims;
 
-namespace LibraryProject.Controllers
+namespace LibraryProject.Controllers.Identity
 {
     public class ClaimsController : Controller
     {
