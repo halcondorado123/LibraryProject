@@ -1,93 +1,40 @@
-using LibraryProject.Models;
-using LibraryProject.Policies.CustomPolicies;
-using LibraryProject.Policies.IdentityPolicies;
-using Microsoft.AspNetCore.Authorization;
-using Microsoft.AspNetCore.Identity;
-using Microsoft.EntityFrameworkCore;
+using LibraryProject.Configurations.Identity;
+using LibraryProject.Modules;
+using LibraryProject.Transversal.Mapper;
 
 var builder = WebApplication.CreateBuilder(args);
 
-// Configura los servicios
-builder.Services.AddRazorPages();
+// -------------------------------------------------------------------
+// 1. Configuración de servicios básicos (MVC + Razor Pages)
+// -------------------------------------------------------------------
 builder.Services.AddControllersWithViews();
+builder.Services.AddRazorPages();
 
-// Configura el DbContext
-builder.Services.AddDbContext<LibraryDbContext>(options =>
-    options.UseSqlServer(builder.Configuration.GetConnectionString("SQLConnection")));
+// -------------------------------------------------------------------
+// 2. Inyección de servicios y módulos personalizados
+// -------------------------------------------------------------------
+builder.Services
+    .AddCustomDbContexts(builder.Configuration)       // DbContext y cadenas de conexión
+    .AddCustomIdentity();                             // Identity Core + EF
 
-// Configura Identity
-builder.Services.AddIdentity<AppUsuario, IdentityRole>()
-    .AddEntityFrameworkStores<LibraryDbContext>()
-    .AddDefaultTokenProviders();
+builder.Services
+    .AddCustomIdentitySettings()                      // Configuración de contraseña, email, etc.
+    .AddIdentityPolicies();                           // Políticas de autorización
 
+builder.Services
+    .AddInjection(builder.Configuration)              // Inyección de servicios: repositorios, dominio, etc.
+    .AddAuthorizationHandlers();                      // IAuthorizationHandler personalizados
 
-// Esta funcion esta asociada a la politica de contraseñas de identity
-builder.Services.Configure<IdentityOptions>(options =>
-{
-    options.Password.RequiredLength = 8;
-    options.Password.RequireNonAlphanumeric = true;
-    options.Password.RequireLowercase = true;
-    options.Password.RequireUppercase = true;
-    options.Password.RequireDigit = true;
-    options.User.RequireUniqueEmail = true;
-    options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
-});
+builder.Services.AddAutoMapper(typeof(MappingsProfile)); // AutoMapper
 
-// Establecer la politica de password personalizada en clase PoliticaPassPersonalizada
-builder.Services.AddTransient<IPasswordValidator<AppUsuario>, PoliticaPassPersonalizada>();
-builder.Services.AddTransient<IUserValidator<AppUsuario>, PoliticaUsuarioEmailPersonalizada>();
-
-
-// -- Es importante registrar los servicio en esta seccion
-// Registrar la clase de autorizacion por IAuthorizationHandler con la clase o servicio ControladorPermitirUsuarios
-builder.Services.AddTransient<IAuthorizationHandler, ControladorPermitirUsuarios>();
-// Registrar la clase de autorizacion por IAuthorizationHandler con la clase o servicio PermitirControladorPrivado
-builder.Services.AddTransient<IAuthorizationHandler, PermitirControladorPrivado>();
-
-// Ruta de autenticacion - Si se cambia debe hacerse manualmente
-builder.Services.ConfigureApplicationCookie(options => {
-    options.Cookie.Name = ".AspNetCore.identity.Application";
-    // Se almacena durante 20 minutos en el navegador
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
-    options.SlidingExpiration = true;
-});
-
-
-// Politica de servicio 01
-builder.Services.AddAuthorization(options =>
-{
-    // Aqui se establece el nombre de la politica
-    options.AddPolicy("Segundo Email", policy =>
-    {
-        policy.RequireRole("Administración");
-        policy.RequireClaim("segundoemail", "Turbias@gmail.com");
-    });
-});
-
-// Politica de servicio 01
-builder.Services.AddAuthorization(options =>
-{
-    // Aqui se establece el nombre de la politica
-    options.AddPolicy("PermitirUsuarios", policy =>
-    {
-        policy.AddRequirements(new PoliticaPermisosUsuario("espana"));
-    });
-});
-
-// Politica de servicio 03
-builder.Services.AddAuthorization(options =>
-{
-    // Aqui se establece el nombre de la politica
-    options.AddPolicy("AccesoPrivado", policy =>
-    {
-        policy.AddRequirements(new PoliticaPermitirPrivado());
-    });
-});
-
-
+// -------------------------------------------------------------------
+// 3. Construcción de la aplicación
+// -------------------------------------------------------------------
 var app = builder.Build();
 
-// Configura el pipeline de solicitudes HTTP
+// -------------------------------------------------------------------
+// 4. Middleware HTTP
+// -------------------------------------------------------------------
 if (!app.Environment.IsDevelopment())
 {
     app.UseExceptionHandler("/Error");
@@ -96,10 +43,14 @@ if (!app.Environment.IsDevelopment())
 
 app.UseHttpsRedirection();
 app.UseStaticFiles();
+
 app.UseRouting();
 app.UseAuthentication();
 app.UseAuthorization();
 
+// -------------------------------------------------------------------
+// 5. Rutas y endpoints
+// -------------------------------------------------------------------
 app.MapRazorPages();
 
 app.MapControllerRoute(

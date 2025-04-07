@@ -7,6 +7,10 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="AutoMapper" Version="14.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Authentication.JwtBearer" Version="8.0.14" />
+    <PackageReference Include="Microsoft.AspNetCore.Components.QuickGrid.EntityFrameworkAdapter" Version="8.0.11" />
+    <PackageReference Include="Microsoft.AspNetCore.Diagnostics.EntityFrameworkCore" Version="8.0.11" />
     <PackageReference Include="Microsoft.AspNetCore.Identity.EntityFrameworkCore" Version="8.0.14" />
     <PackageReference Include="Microsoft.EntityFrameworkCore" Version="9.0.3" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design" Version="9.0.3">
@@ -19,6 +23,24 @@
       <PrivateAssets>all</PrivateAssets>
       <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
     </PackageReference>
+    <PackageReference Include="Microsoft.VisualStudio.Web.CodeGeneration.Design" Version="8.0.7" />
+    <PackageReference Include="Swashbuckle.AspNetCore" Version="8.1.0" />
+    <PackageReference Include="Swashbuckle.AspNetCore.Annotations" Version="8.1.0" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\LibraryProject.Application.DTO\LibraryProject.Application.DTO.csproj" />
+    <ProjectReference Include="..\LibraryProject.Application.Interface\LibraryProject.Application.Interface.csproj" />
+    <ProjectReference Include="..\LibraryProject.Application.Main\LibraryProject.Application.Services.csproj" />
+    <ProjectReference Include="..\LibraryProject.Domain.Core\LibraryProject.Domain.Core.csproj" />
+    <ProjectReference Include="..\LibraryProject.Domain.Entities\LibraryProject.Domain.Entities.csproj" />
+    <ProjectReference Include="..\LibraryProject.Domain.Interface\LibraryProject.Domain.Interface.csproj" />
+    <ProjectReference Include="..\LibraryProject.Infraestructure.Data\LibraryProject.Infraestructure.Data.csproj" />
+    <ProjectReference Include="..\LibraryProject.Infraestructure.Identity\LibraryProject.Infraestructure.Identity.csproj" />
+    <ProjectReference Include="..\LibraryProject.Infraestructure.Interface\LibraryProject.Infraestructure.Interface.csproj" />
+    <ProjectReference Include="..\LibraryProject.Infraestructure.Repository\LibraryProject.Infraestructure.Repository.csproj" />
+    <ProjectReference Include="..\LibraryProject.Transversal.Logging\LibraryProject.Transversal.Logging.csproj" />
+    <ProjectReference Include="..\LibraryProject.Transversal.Mapper\LibraryProject.Transversal.Mapper.csproj" />
   </ItemGroup>
 
 </Project>

@@ -72,12 +72,12 @@
                     <div class="col-md-4 mb-3">
                         <div class="form-group">
                             <label asp-for="Pais" class="form-label">País</label>
-                            <div class="input-group">
+@*                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-globe"></i></span>
                                 <select asp-for="Pais" class="form-select" asp-items="@new SelectList(Enum.GetNames(typeof(Pais)))">
                                     <option selected disabled value="Select">Selecciona un país</option>
                                 </select>
-                            </div>
+                            </div> *@
                             <span asp-validation-for="Pais" class="text-danger"></span>
                         </div>
                     </div>
