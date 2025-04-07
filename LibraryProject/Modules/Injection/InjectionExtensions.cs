@@ -18,6 +18,7 @@ namespace LibraryProject.Modules
             services.AddScoped<IBooksDomain, BooksDomain>();
             services.AddScoped<IBookApplication, BookApplication>();
             services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
+            services.AddScoped<IUnitOfWork, UnitOfWork>();
 
             return services;
         }

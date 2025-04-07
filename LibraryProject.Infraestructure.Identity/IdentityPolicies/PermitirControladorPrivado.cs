@@ -1,11 +1,7 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 
-namespace LibraryProject.Policies.IdentityPolicies
+namespace LibraryProject.Infraestructure.Identity.IdentityPolicies
 {
-    public class PoliticaPermitirPrivado : IAuthorizationRequirement
-    {
-    }
-
     public class PermitirControladorPrivado : AuthorizationHandler<PoliticaPermitirPrivado>
     {
         protected override Task HandleRequirementAsync(AuthorizationHandlerContext context, PoliticaPermitirPrivado requirement)
