@@ -1,16 +1,14 @@
-﻿using LibraryProject.Application.DTO.Library;
-using LibraryProject.Domain.Entities.Library;
+﻿using LibraryProject.Domain.Entities.Library;
 using LibraryProject.Infraestructure.Interface.Library;
-using LibraryProject.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibraryProject.Infraestructure.Repository.Library
 {
     public class BooksRepository : IBooksRepository
     {
-        private readonly LibraryDbContext _dbContext;
+        private readonly AppDbContext _dbContext;
 
-        public BooksRepository(LibraryDbContext dbContext)
+        public BooksRepository(AppDbContext dbContext)
         {
             _dbContext = dbContext;
         }

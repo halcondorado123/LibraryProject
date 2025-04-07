@@ -1,5 +1,4 @@
 ﻿using LibraryProject.Domain.Entities.UserAttributes;
-using LibraryProject.Models;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.EntityFrameworkCore;
 
@@ -9,13 +8,8 @@ namespace LibraryProject.Modules
     {
         public static IServiceCollection AddCustomDbContexts(this IServiceCollection services, IConfiguration configuration)
         {
-            // Contexto principal
-            services.AddDbContext<LibraryDbContext>(options =>
+            services.AddDbContext<AppDbContext>(options =>
                 options.UseSqlServer(configuration.GetConnectionString("SQLConnection")));
-
-            // Aquí puedes agregar más contextos si lo necesitas
-            // services.AddDbContext<OtroDbContext>(options =>
-            //     options.UseSqlServer(configuration.GetConnectionString("OtraConexion")));
 
             return services;
         }
@@ -23,7 +17,7 @@ namespace LibraryProject.Modules
         public static IServiceCollection AddCustomIdentity(this IServiceCollection services)
         {
             services.AddIdentity<AppUsuario, IdentityRole>()
-                .AddEntityFrameworkStores<LibraryDbContext>()
+                .AddEntityFrameworkStores<AppDbContext>()
                 .AddDefaultTokenProviders();
 
             return services;

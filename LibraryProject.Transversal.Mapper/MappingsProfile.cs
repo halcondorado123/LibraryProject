@@ -36,6 +36,7 @@ namespace LibraryProject.Transversal.Mapper
             CreateMap<UpdateUserDTO, AppUsuario>()
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Nombre))
                 .ForMember(dest => dest.PasswordHash, opt => opt.Ignore());
+
         }
     }
 }

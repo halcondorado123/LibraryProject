@@ -27,6 +27,9 @@ builder.Services
 
 builder.Services.AddAutoMapper(typeof(MappingsProfile)); // AutoMapper
 
+builder.Services.AddCustomDbContexts(builder.Configuration)
+                .AddCustomIdentity();
+
 // -------------------------------------------------------------------
 // 3. Construcción de la aplicación
 // -------------------------------------------------------------------
