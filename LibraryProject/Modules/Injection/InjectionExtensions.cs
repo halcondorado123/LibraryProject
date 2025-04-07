@@ -1,8 +1,11 @@
 ﻿using LibraryProject.Application.DTO;
 using LibraryProject.Application.Services;
-using LibraryProject.Domain.Core;
-using LibraryProject.Domain.Interface;
+using LibraryProject.Application.Services.Location;
+using LibraryProject.Domain.Core.Library;
+using LibraryProject.Domain.Interface.Library;
 using LibraryProject.Infraestructure.Interface;
+using LibraryProject.Infraestructure.Interface.Library;
+using LibraryProject.Infraestructure.Interface.Location;
 using LibraryProject.Infraestructure.Repository;
 using LibraryProject.Transversal.Common;
 using LibraryProject.Transversal.Logging;
@@ -19,6 +22,8 @@ namespace LibraryProject.Modules
             services.AddScoped<IBookApplication, BookApplication>();
             services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
+            services.AddScoped<ICountryRepository, CountryRepository>();
+            services.AddScoped<CountryApplication>();
 
             return services;
         }

@@ -2,7 +2,7 @@
 using LibraryProject.Application.DTO;
 using LibraryProject.Application.DTO.Library;
 using LibraryProject.Domain.Entities.Library;
-using LibraryProject.Domain.Interface;
+using LibraryProject.Domain.Interface.Library;
 using LibraryProject.Transversal.Common;
 using System;
 using System.Collections.Generic;

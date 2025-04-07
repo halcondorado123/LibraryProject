@@ -1,9 +1,9 @@
 ﻿using LibraryProject.Domain.Entities.Library;
-using LibraryProject.Domain.Interface;
+using LibraryProject.Domain.Interface.Library;
 using LibraryProject.Infraestructure.Interface;
 
 
-namespace LibraryProject.Domain.Core
+namespace LibraryProject.Domain.Core.Library
 {
     public class BooksDomain : IBooksDomain
     {

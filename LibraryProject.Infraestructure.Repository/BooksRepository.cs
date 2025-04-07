@@ -1,6 +1,7 @@
 ﻿using LibraryProject.Application.DTO.Library;
 using LibraryProject.Domain.Entities.Library;
 using LibraryProject.Infraestructure.Interface;
+using LibraryProject.Infraestructure.Interface.Library;
 using LibraryProject.Models;
 using Microsoft.EntityFrameworkCore;
 

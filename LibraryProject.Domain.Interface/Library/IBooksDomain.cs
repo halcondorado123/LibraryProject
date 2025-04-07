@@ -5,7 +5,7 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibraryProject.Domain.Interface
+namespace LibraryProject.Domain.Interface.Library
 {
     public interface IBooksDomain
     {

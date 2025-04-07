@@ -1,4 +1,4 @@
-@model AppUsuario
+@model LibraryProject.Application.DTO.Identity.AdminDTO.UpdateUserDTO
 @{
     ViewData["Title"] = "Actualizar Usuario";
 }
@@ -68,20 +68,19 @@
                     </div>
                 </div>
 
-                <div class="row">
-                    <div class="col-md-4 mb-3">
-                        <div class="form-group">
-                            <label asp-for="Pais" class="form-label">País</label>
-@*                             <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-globe"></i></span>
-                                <select asp-for="Pais" class="form-select" asp-items="@new SelectList(Enum.GetNames(typeof(Pais)))">
-                                    <option selected disabled value="Select">Selecciona un país</option>
-                                </select>
-                            </div> *@
-                            <span asp-validation-for="Pais" class="text-danger"></span>
-                        </div>
+                <div class="form-group mb-3">
+                    <label asp-for="PaisId" class="form-label">País</label>
+                    <div class="input-group">
+                        <span class="input-group-text"><i class="fas fa-globe"></i></span>
+                        <select asp-for="PaisId" class="form-select" asp-items="@new SelectList(Enum.GetNames(typeof(Pais)))">
+                            <option selected disabled value="Select">Selecciona un país</option>
+                        </select>
                     </div>
+                    <span asp-validation-for="PaisId" class="text-danger"></span>
+                </div>
 
+
+                <div class="row">
                     <div class="col-md-4 mb-3">
                         <div class="form-group">
                             <label asp-for="Edad" class="form-label">Edad</label>
@@ -114,208 +113,3 @@
         </div>
     </div>
 </div>
-
-<!-- Estilos CSS necesarios para el formulario -->
-<style>
-    /* Variables de colores (mantener consistente con la tabla) */
-    :root {
-        --primary-color: #4e73df;
-        --secondary-color: #858796;
-        --success-color: #1cc88a;
-        --danger-color: #e74a3b;
-    }
-
-    body {
-        background-color: #f8f9fc;
-        font-family: 'Nunito', sans-serif;
-    }
-
-    .page-header {
-        background-color: white;
-        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-        border-radius: 0.5rem;
-        padding: 1.5rem;
-        margin-bottom: 1.5rem;
-    }
-
-    .form-wrapper {
-        background-color: white;
-        border-radius: 0.5rem;
-        box-shadow: 0 0.15rem 1.75rem 0 rgba(58, 59, 69, 0.15);
-        padding: 1.5rem;
-        margin-top: 20px;
-    }
-
-    .form-container {
-        width: 100%;
-    }
-
-    .form-group {
-        margin-bottom: 1rem;
-    }
-
-    .form-label {
-        font-weight: 600;
-        color: #4e73df;
-        margin-bottom: 0.5rem;
-        display: block;
-    }
-
-    .form-control, .form-select {
-        border-radius: 0.35rem;
-        padding: 0.375rem 0.75rem;
-        border: 1px solid #d1d3e2;
-        transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
-    }
-
-        .form-control:focus, .form-select:focus {
-            border-color: #bac8f3;
-            box-shadow: 0 0 0 0.2rem rgba(78, 115, 223, 0.25);
-        }
-
-        .form-control:disabled {
-            background-color: #f8f9fc;
-            cursor: not-allowed;
-        }
-
-    .input-group-text {
-        background-color: #f8f9fc;
-        border: 1px solid #d1d3e2;
-        border-radius: 0.35rem 0 0 0.35rem;
-    }
-
-    .input-group .form-control {
-        border-radius: 0 0.35rem 0.35rem 0;
-    }
-
-    .validation-summary {
-        padding: 1rem;
-        border-radius: 0.35rem;
-        background-color: rgba(231, 74, 59, 0.05);
-        margin-bottom: 1.5rem;
-    }
-
-    .text-muted {
-        font-size: 0.85rem;
-        margin-top: 0.3rem;
-        display: block;
-    }
-
-    .btn-primary {
-        background-color: var(--primary-color);
-        border-color: var(--primary-color);
-        transition: all 0.2s;
-    }
-
-        .btn-primary:hover {
-            background-color: #2e59d9;
-            border-color: #2e59d9;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(46, 89, 217, 0.3);
-        }
-
-    .btn-secondary {
-        background-color: var(--secondary-color);
-        border-color: var(--secondary-color);
-        transition: all 0.2s;
-    }
-
-        .btn-secondary:hover {
-            background-color: #717384;
-            border-color: #717384;
-            transform: translateY(-2px);
-            box-shadow: 0 4px 10px rgba(133, 135, 150, 0.3);
-        }
-
-    .form-actions {
-        display: flex;
-        justify-content: flex-end;
-    }
-
-    /* Estilos para los mensajes de validación */
-    .text-danger {
-        font-size: 0.85rem;
-        margin-top: 0.25rem;
-    }
-
-    /* Estilos para el indicador de contraseña */
-    .password-match-indicator {
-        height: 5px;
-        border-radius: 3px;
-        margin-top: 5px;
-        transition: all 0.3s;
-    }
-
-    .password-mismatch {
-        background-color: var(--danger-color);
-    }
-
-    .password-match {
-        background-color: var(--success-color);
-    }
-</style>
-
-<!-- Incluir Font Awesome y Google Fonts -->
-<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
-<link href="https://fonts.googleapis.com/css2?family=Nunito:wght@400;600;700&display=swap" rel="stylesheet">
-
-<!-- Scripts para validación de contraseñas -->
-<script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
-<script>
-    $(document).ready(function () {
-        // Validación de contraseñas coincidentes
-        $('#confirmPassword').on('keyup', function () {
-            var password = $('#password').val();
-            var confirmPassword = $(this).val();
-
-            if (password !== '' && confirmPassword !== '') {
-                if (password !== confirmPassword) {
-                    $('#passwordMatchError').show();
-                    $('#submitBtn').prop('disabled', true);
-                } else {
-                    $('#passwordMatchError').hide();
-                    $('#submitBtn').prop('disabled', false);
-                }
-            } else {
-                $('#passwordMatchError').hide();
-                $('#submitBtn').prop('disabled', false);
-            }
-        });
-
-        $('#password').on('keyup', function () {
-            var password = $(this).val();
-            var confirmPassword = $('#confirmPassword').val();
-
-            if (password !== '' && confirmPassword !== '') {
-                if (password !== confirmPassword) {
-                    $('#passwordMatchError').show();
-                    $('#submitBtn').prop('disabled', true);
-                } else {
-                    $('#passwordMatchError').hide();
-                    $('#submitBtn').prop('disabled', false);
-                }
-            } else {
-                $('#passwordMatchError').hide();
-                $('#submitBtn').prop('disabled', false);
-            }
-        });
-
-        // Validación antes de enviar el formulario
-        $('form').on('submit', function (e) {
-            var password = $('#password').val();
-            var confirmPassword = $('#confirmPassword').val();
-
-            if (password !== '' && confirmPassword !== '' && password !== confirmPassword) {
-                e.preventDefault();
-                $('#passwordMatchError').show();
-                return false;
-            }
-
-            return true;
-        });
-    });
-</script>
-
-<!-- Scripts para validación del lado del cliente (opcional) -->
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validation-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
