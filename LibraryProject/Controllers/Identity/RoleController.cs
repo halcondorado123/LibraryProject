@@ -1,4 +1,5 @@
-﻿using LibraryProject.Models;
+﻿using LibraryProject.Application.DTO.Identity.RoleDTO;
+using LibraryProject.Domain.Entities.UserAttributes;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 using System.ComponentModel.DataAnnotations;
@@ -16,23 +17,23 @@ namespace LibraryProject.Controllers.Identity
             _roleManager = roleManager;
             _userManager = userManager;
         }
+
         public async Task<IActionResult> Index(int page = 1, int pageSize = 5)
         {
             var roles = _roleManager.Roles.ToList();
-            var roleViewModels = new List<RoleViewModel>();
+            var roleViewModels = new List<RoleViewDTO>();
 
             foreach (var role in roles)
             {
                 var usersInRole = await _userManager.GetUsersInRoleAsync(role.Name);
-                roleViewModels.Add(new RoleViewModel
+                roleViewModels.Add(new RoleViewDTO
                 {
                     Id = role.Id,
                     Name = role.Name,
-                    UserCount = usersInRole.Count // Cantidad de usuarios por rol
+                    UserCount = usersInRole.Count
                 });
             }
 
-            // Paginación
             var totalRoles = roleViewModels.Count;
             var totalPages = (int)Math.Ceiling((double)totalRoles / pageSize);
 
@@ -47,30 +48,28 @@ namespace LibraryProject.Controllers.Identity
             return View(rolesPaginados);
         }
 
-
-
-        // Peticion HHTP GEt, para poder crear un rol
         public IActionResult Create()
         {
             return View();
         }
 
-        // Permitira crear el usuario en base de datos.
         [HttpPost]
-        public async Task<IActionResult> Create([Required] string nombre)
+        public async Task<IActionResult> Create(CreateRoleDTO roleDto)
         {
             if (ModelState.IsValid)
             {
-                IdentityResult resultado = await _roleManager.CreateAsync(new IdentityRole(nombre));
+                IdentityResult result = await _roleManager.CreateAsync(new IdentityRole(roleDto.Nombre));
 
-                if (resultado.Succeeded)
+                if (result.Succeeded)
                     return RedirectToAction("Index");
-                else
-                    foreach (IdentityError error in resultado.Errors)
-                        ModelState.AddModelError("", error.Description);
+
+                foreach (IdentityError error in result.Errors)
+                    ModelState.AddModelError(string.Empty, error.Description);
             }
-            return View(nombre);
+
+            return View(roleDto);
         }
+
 
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
@@ -87,7 +86,6 @@ namespace LibraryProject.Controllers.Identity
             }
 
             return View("Index", _roleManager.Roles);
-
         }
 
 
@@ -95,9 +93,17 @@ namespace LibraryProject.Controllers.Identity
         public async Task<IActionResult> Update(string id)
         {
             IdentityRole rol = await _roleManager.FindByIdAsync(id);
-            List<AppUsuario> miembros = new List<AppUsuario>();
-            List<AppUsuario> Nomiembros = new List<AppUsuario>();
 
+            if (rol == null)
+            {
+                return NotFound();  // Si el rol no existe
+            }
+
+            // Inicializar las listas para los miembros y no miembros
+            List<UpdateRoleDTO.UserInRoleDto> miembros = new List<UpdateRoleDTO.UserInRoleDto>();
+            List<UpdateRoleDTO.UserInRoleDto> noMiembros = new List<UpdateRoleDTO.UserInRoleDto>();
+
+            // Recorrer todos los usuarios para ver si pertenecen al rol
             foreach (AppUsuario usuario in _userManager.Users)
             {
                 // Obtener todos los roles del usuario
@@ -106,84 +112,99 @@ namespace LibraryProject.Controllers.Identity
                 // Verificar si el usuario pertenece al rol actual
                 if (rolesUsuario.Contains(rol.Name))
                 {
-                    miembros.Add(usuario);
+                    miembros.Add(new UpdateRoleDTO.UserInRoleDto
+                    {
+                        UserId = usuario.Id,
+                        Email = usuario.Email
+                    });
                 }
                 else
                 {
-                    // Si el usuario ya pertenece a otro rol, no lo agregamos a NonMembers
-                    if (!rolesUsuario.Any())
+                    // Si el usuario no pertenece al rol, lo agregamos a NonMembers
+                    noMiembros.Add(new UpdateRoleDTO.UserInRoleDto
                     {
-                        Nomiembros.Add(usuario);
-                    }
+                        UserId = usuario.Id,
+                        Email = usuario.Email
+                    });
                 }
             }
 
-            return View(new RoleEditar
+            // Crear el DTO para la vista
+            var roleDto = new UpdateRoleDTO
             {
-                Role = rol,
+                RoleId = rol.Id,
+                RoleName = rol.Name,
                 Members = miembros,
-                NonMembers = Nomiembros
-            });
+                NonMembers = noMiembros
+            };
+
+            // Retornar el DTO a la vista
+            return View(roleDto);
         }
 
         // Metodo funcional para agregar o elimnar usuarios de role identity
         [HttpPost]
-        public async Task<IActionResult> Update(RoleModificar modelo)
+        public async Task<IActionResult> Update(ModifyRoleDTO rolDto)
         {
             try
             {
-                IdentityResult resultado;
+                IdentityResult result;
                 if (ModelState.IsValid)
                 {
-                    foreach (string usuarioId in modelo.AgregarIds ?? new string[] { })
+                    // Agregar usuarios al rol
+                    foreach (string usuarioId in rolDto.AgregarIds ?? new string[] { })
                     {
                         AppUsuario usuario = await _userManager.FindByIdAsync(usuarioId);
                         if (usuario != null)
                         {
-                            resultado = await _userManager.AddToRoleAsync(usuario, modelo.NombreRol);
-                            if (!resultado.Succeeded)
-                                ModelState.AddModelError("", "No se ha podido agregar el usuario al Rol");
+                            if (!await _userManager.IsInRoleAsync(usuario, rolDto.NombreRol)) // Verifica que no esté ya en el rol
+                            {
+                                result = await _userManager.AddToRoleAsync(usuario, rolDto.NombreRol);
+                                if (!result.Succeeded)
+                                    ModelState.AddModelError("", "No se ha podido agregar el usuario al Rol");
+                            }
                         }
                     }
-                    foreach (string usuarioId in modelo.EliminarIds ?? new string[] { })
+
+                    // Eliminar usuarios del rol
+                    foreach (string usuarioId in rolDto.EliminarIds ?? new string[] { })
                     {
                         AppUsuario usuario = await _userManager.FindByIdAsync(usuarioId);
                         if (usuario != null)
                         {
-                            resultado = await _userManager.RemoveFromRoleAsync(usuario, modelo.NombreRol);
-                            if (!resultado.Succeeded)
-                                ModelState.AddModelError("", "No se ha podido eliminar el usuario del rol");
+                            if (await _userManager.IsInRoleAsync(usuario, rolDto.NombreRol)) // Verifica que esté en el rol
+                            {
+                                result = await _userManager.RemoveFromRoleAsync(usuario, rolDto.NombreRol);
+                                if (!result.Succeeded)
+                                    ModelState.AddModelError("", "No se ha podido eliminar el usuario del rol");
+                            }
                         }
                     }
                 }
             }
             catch (Exception ex)
             {
-                ex.Message.ToString();
+                ModelState.AddModelError("", "Ocurrió un error inesperado.");
             }
 
-            //try
-            //{
             if (ModelState.IsValid)
             {
-                return RedirectToAction(nameof(Index));
+                return RedirectToAction(nameof(Index)); // Si todo fue bien, redirige al Index
             }
             else
-                return await Update(modelo.IdRol);
-            //}
-
-            //catch (Exception ex)
-            //{
-            //    ex.Message.ToString();
-            //}
-
+            {
+                return View(rolDto); // Si hubo errores, regresa a la vista de actualización con los errores
+            }
         }
 
         [HttpGet]
         public async Task<IActionResult> GetUserCountInRole(string roleId)
         {
-            var userCount = await _userManager.GetUsersInRoleAsync(roleId);
-            return Json(userCount.Count);
+            // Obtener la lista de usuarios en el rol
+            var usersInRole = await _userManager.GetUsersInRoleAsync(roleId);
+
+            // Devolver solo la cantidad de usuarios en el rol
+            return Json(usersInRole.Count());
         }
     }
 }

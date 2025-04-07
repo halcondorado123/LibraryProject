@@ -1,4 +1,4 @@
-﻿namespace LibraryProject.Application.DTO.Identity
+﻿namespace LibraryProject.Application.DTO.Identity.HomeDTO
 {
     public class AccessInfoDTO
     {

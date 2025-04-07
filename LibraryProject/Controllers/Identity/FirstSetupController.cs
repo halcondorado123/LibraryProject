@@ -1,4 +1,4 @@
-﻿using LibraryProject.Application.DTO.Identity;
+﻿using LibraryProject.Application.DTO.Identity.InitialDTO;
 using LibraryProject.Domain.Entities.UserAttributes;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
@@ -45,7 +45,7 @@ namespace LibraryProject.Controllers.Identity
             if (!ModelState.IsValid)
                 return View(model);
 
-            if (model.CodigoValidacion != CodigoEspecial)
+            if (model.CodigoValidacion != _codigoEspecial)
             {
                 ModelState.AddModelError("CodigoValidacion", "El código de validación no es válido.");
                 return View(model);

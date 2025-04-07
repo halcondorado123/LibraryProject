@@ -1,6 +1,5 @@
 ﻿using LibraryProject.Application.DTO.Identity.ClaimsDTO;
 using LibraryProject.Domain.Entities.UserAttributes;
-using LibraryProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;

@@ -1,5 +1,4 @@
 ﻿using Microsoft.OpenApi.Models;
-using Swashbuckle.AspNetCore.SwaggerGen;
 
 public static class SwaggerConfig
 {
@@ -37,7 +36,6 @@ public static class SwaggerConfig
                         new string[] {}
                     }
             });
-            //c.OperationFilter<AddAuthResponses>();
         });
     }
 

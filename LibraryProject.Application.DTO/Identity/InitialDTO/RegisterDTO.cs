@@ -1,6 +1,6 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace LibraryProject.Application.DTO.Identity
+namespace LibraryProject.Application.DTO.Identity.InitialDTO
 {
     public class RegisterDTO
     {

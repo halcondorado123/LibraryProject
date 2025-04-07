@@ -1,6 +1,8 @@
 ﻿using AutoMapper;
 using LibraryProject.Application.DTO.Identity;
 using LibraryProject.Application.DTO.Identity.AdminDTO;
+using LibraryProject.Application.DTO.Identity.InitialDTO;
+using LibraryProject.Application.DTO.Identity.RoleDTO;
 using LibraryProject.Application.DTO.Library;
 using LibraryProject.Domain.Entities.Library;
 using LibraryProject.Domain.Entities.UserAttributes;

@@ -1,7 +1,6 @@
-﻿using LibraryProject.Application.DTO.Identity;
+﻿using LibraryProject.Application.DTO.Identity.InitialDTO;
 using LibraryProject.Domain.Entities.Location;
 using LibraryProject.Domain.Entities.UserAttributes;
-using LibraryProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
