@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibraryProject.Domain.Entities.UserAuthentication
+namespace LibraryProject.Domain.Interface
 {
-    public class RoleEditar
+    internal interface IUsuarioDomain
     {
     }
 }

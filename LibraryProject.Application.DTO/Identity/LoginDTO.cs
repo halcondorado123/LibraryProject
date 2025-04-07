@@ -1,8 +1,8 @@
 ﻿using System.ComponentModel.DataAnnotations;
 
-namespace LibraryProject.Models
+namespace LibraryProject.Application.DTO.Identity
 {
-    public class Login
+    public class LoginDTO
     {
         [Required]
         public string Email { get; set; }

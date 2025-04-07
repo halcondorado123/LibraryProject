@@ -1,4 +1,6 @@
-﻿using LibraryProject.Models;
+﻿using LibraryProject.Application.DTO.Identity.ClaimsDTO;
+using LibraryProject.Domain.Entities.UserAttributes;
+using LibraryProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -8,24 +10,22 @@ namespace LibraryProject.Controllers.Identity
 {
     public class ClaimsController : Controller
     {
+        // Para la implementacion de acceso privado
+        private IAuthorizationService _authService;
+        private readonly UserManager<AppUsuario> _userManager;
+
+        public ClaimsController(UserManager<AppUsuario> userManager, IAuthorizationService authService)
+        {
+            _userManager = userManager;
+            _authService = authService;
+        }
+
         //[Authorize]
         //[Authorize(Policy = "Segundo Email")]
         public ViewResult Index()
         {
             return View(User?.Claims);
         }
-
-        private readonly UserManager<AppUsuario> userManager;
-
-        // Para la implementacion de acceso privado
-        private IAuthorizationService authService;
-
-        public ClaimsController(UserManager<AppUsuario> userManager, IAuthorizationService authService)
-        {
-            this.userManager = userManager;
-            this.authService = authService;             // <-- Para la implementacion de acceso privado
-        }
-
 
         public ViewResult Create()
         {
@@ -35,80 +35,79 @@ namespace LibraryProject.Controllers.Identity
 
         // Obtener el usuario actual desde UserManager
         [HttpPost]
-        public async Task<IActionResult> Create(string claimtype, string claimValue)
+        public async Task<IActionResult> Create(CreateClaimDTO model)
         {
-            AppUsuario usuario = await userManager.GetUserAsync(HttpContext.User);
-            Claim reclamo = new Claim(claimtype, claimValue, ClaimValueTypes.String);
+            if (!ModelState.IsValid)
+                return View(model);
 
-            // Crear nuevo reclamo para nuestro usuario
-            IdentityResult resultado = await userManager.AddClaimAsync(usuario, reclamo);
-            if (resultado.Succeeded)
+            var user = await _userManager.GetUserAsync(User);
+            var claim = new Claim(model.ClaimType, model.ClaimValue, ClaimValueTypes.String);
+
+            var result = await _userManager.AddClaimAsync(user, claim);
+
+            if (result.Succeeded)
                 return RedirectToAction("Index");
-            else
-                ModelState.AddModelError("", "No se ha podido crear el reclamo");
 
-            return View();
+            Errors(result); // Si tienes un método Errors como en los controladores anteriores
+
+            return View(model);
         }
-
 
         // Eliminar un reclamo
         [HttpPost]
-        public async Task<IActionResult> Delete(string claimValues)
+        public async Task<IActionResult> Delete(DeleteClaimDTO dto)
         {
             try
             {
-                AppUsuario usuario = await userManager.GetUserAsync(HttpContext.User);
+                AppUsuario user = await _userManager.GetUserAsync(HttpContext.User);
 
-                if (usuario == null)
+                if (user == null)
                 {
                     ModelState.AddModelError("", "Usuario no encontrado.");
-                    return View();
+                    return View("Index", User?.Claims);
                 }
 
-                string[] claimValueArray = claimValues.Split(";");
-                if (claimValueArray.Length < 3)
-                {
-                    ModelState.AddModelError("", "Formato de reclamo inválido.");
-                    return View();
-                }
-
-                string claimType = claimValueArray[0], claimValue = claimValueArray[1], claimIssuer = claimValueArray[2];
-
-                Claim reclamo = User.Claims
-                    .Where(x => x.Type == claimType && x.Value == claimValue && x.Issuer == claimIssuer)
-                    .FirstOrDefault();
+                var claims = await _userManager.GetClaimsAsync(user);
+                Claim? reclamo = claims.FirstOrDefault(x =>
+                    x.Type == dto.ClaimType &&
+                    x.Value == dto.ClaimValue &&
+                    x.Issuer == dto.ClaimIssuer
+                );
 
                 if (reclamo == null)
                 {
                     ModelState.AddModelError("", "Reclamo no encontrado.");
-                    return View();
+                    return View("Index", claims);
                 }
 
-                IdentityResult resultado = await userManager.RemoveClaimAsync(usuario, reclamo);
+                IdentityResult result = await _userManager.RemoveClaimAsync(user, reclamo);
 
-                if (resultado.Succeeded)
+                if (result.Succeeded)
                 {
                     return RedirectToAction("Index");
                 }
-                else
-                {
-                    ModelState.AddModelError("", "No se ha podido eliminar el reclamo.");
-                }
+
+                foreach (var error in result.Errors)
+                    ModelState.AddModelError("", error.Description);
+
+                return View("Index", claims);
             }
             catch (Exception ex)
             {
                 ModelState.AddModelError("", $"Ocurrió un error: {ex.Message}");
+                return View("Index", User?.Claims);
             }
-
-            return View();
         }
 
+
         //[Authorize(Policy = "Segundo Email")]
+        // Sirve para mostrar los claims (modo libre).
         public ViewResult Proyecto()
         {
             return View("Index", User?.Claims);
         }
 
+        // Política para proteger una acción específica basada en los claims del usuario.
         [Authorize(Policy = "PermitirUsuarios")]
         public ViewResult SubirArchivos()
         {
@@ -116,20 +115,60 @@ namespace LibraryProject.Controllers.Identity
         }
 
 
-        public async Task<IActionResult> AccesoPrivado(string titulo)
+        // Eliminar un claim
+        [HttpPost]
+        public async Task<IActionResult> Delete(string claimValues)
         {
-            string[] UsuariosPermitidos = { "espana", "turbias" };
-            AuthorizationResult resultado = await authService.AuthorizeAsync(User, UsuariosPermitidos, "AccesoPrivado");
-
-            if (resultado.Succeeded)
+            try
             {
-                return View("Index", User?.Claims);     // Trae todos los Claims al(los) usuarios autorizados
+                var user = await _userManager.GetUserAsync(User);
+
+                if (user == null)
+                {
+                    ModelState.AddModelError("", "Usuario no encontrado.");
+                    return View("Index", User?.Claims);
+                }
+
+                var claimArray = claimValues.Split(";");
+                if (claimArray.Length < 3)
+                {
+                    ModelState.AddModelError("", "Formato inválido para eliminar el claim.");
+                    return View("Index", User?.Claims);
+                }
+
+                string type = claimArray[0];
+                string value = claimArray[1];
+                string issuer = claimArray[2];
+
+                var claim = User.Claims.FirstOrDefault(c =>
+                    c.Type == type && c.Value == value && c.Issuer == issuer);
+
+                if (claim == null)
+                {
+                    ModelState.AddModelError("", "Reclamo no encontrado.");
+                    return View("Index", User?.Claims);
+                }
+
+                var result = await _userManager.RemoveClaimAsync(user, claim);
+
+                if (result.Succeeded)
+                    return RedirectToAction("Index");
+
+                ModelState.AddModelError("", "Error al eliminar el reclamo.");
+            }
+            catch (Exception ex)
+            {
+                ModelState.AddModelError("", $"Error: {ex.Message}");
             }
 
-            else
-            {
-                return Content("Ha sucedido un error en el acceso a este recurso");
-            }
+            return View("Index", User?.Claims);
         }
+    
+        private void Errors(IdentityResult result)
+        {
+            foreach (IdentityError error in result.Errors)
+                ModelState.AddModelError("", error.Description);
+        }
+
     }
 }

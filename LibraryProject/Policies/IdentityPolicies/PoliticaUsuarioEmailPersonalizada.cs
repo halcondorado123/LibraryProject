@@ -1,4 +1,5 @@
-﻿using LibraryProject.Models;
+﻿using LibraryProject.Domain.Entities.UserAttributes;
+using LibraryProject.Models;
 using Microsoft.AspNetCore.Identity;
 
 namespace LibraryProject.Policies.IdentityPolicies

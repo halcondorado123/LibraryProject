@@ -4,9 +4,9 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace LibraryProject.Domain.Entities.UserAuthentication
+namespace LibraryProject.Infraestructure.Common.Services
 {
-    public class InfoAccesoApp
+    internal class AuthService
     {
     }
 }

@@ -1,4 +1,7 @@
-﻿using LibraryProject.Models;
+﻿using AutoMapper;
+using LibraryProject.Application.DTO.Identity;
+using LibraryProject.Application.DTO.Identity.AdminDTO;
+using LibraryProject.Domain.Entities.UserAttributes;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
 
@@ -6,42 +9,37 @@ namespace LibraryProject.Controllers.Identity
 {
     public class AdminController : Controller
     {
-        //public IActionResult Index()
-        //{
-        //    return View(userManager.Users);
-        //}
+        private readonly IMapper _mapper;
+        private UserManager<AppUsuario> _userManager;
+        private IPasswordHasher<AppUsuario> _passwordHasher;
+        private IPasswordValidator<AppUsuario> _passwordValidator;
+        private IUserValidator<AppUsuario> _userValidator;
 
-        private UserManager<AppUsuario> userManager;
-        private IPasswordHasher<AppUsuario> passwordHasher;
-        private IPasswordValidator<AppUsuario> passwordValidator;
-        private IUserValidator<AppUsuario> userValidator;
-
-        public AdminController(UserManager<AppUsuario> userManager, IPasswordHasher<AppUsuario> passwordHash, IPasswordValidator<AppUsuario> passwordValidator, IUserValidator<AppUsuario> userValidator)
+        public AdminController(UserManager<AppUsuario> userManager, IPasswordHasher<AppUsuario> passwordHash, IPasswordValidator<AppUsuario> passwordValidator, IUserValidator<AppUsuario> userValidator, IMapper mapper)
         {
-            this.userManager = userManager;
-            passwordHasher = passwordHash;
-            this.passwordValidator = passwordValidator;
-            this.userValidator = userValidator;
+            _userManager = userManager;
+            _passwordHasher = passwordHash;
+            _passwordValidator = passwordValidator;
+            _userValidator = userValidator;
+            _mapper = mapper;
         }
-
 
         public IActionResult Index(int page = 1, int pageSize = 5)
         {
-            var totalUsuarios = userManager.Users.Count(); // Total de usuarios
-            var usuarios = userManager.Users
+            var totalUsers = _userManager.Users.Count(); // Total de usuarios
+            var users = _userManager.Users
                 .OrderBy(u => u.UserName) // Ordenar por nombre
                 .Skip((page - 1) * pageSize) // Saltar los registros de páginas anteriores
                 .Take(pageSize) // Tomar solo los registros necesarios
                 .ToList();
 
-            var totalPages = (int)Math.Ceiling((double)totalUsuarios / pageSize); // Total de páginas
+            var totalPages = (int)Math.Ceiling((double)totalUsers / pageSize); // Total de páginas
 
             ViewBag.CurrentPage = page;
             ViewBag.TotalPages = totalPages;
 
-            return View(usuarios);
+            return View(users);
         }
-
 
         public ViewResult Create()
         {
@@ -49,43 +47,36 @@ namespace LibraryProject.Controllers.Identity
         }
 
         [HttpPost]
-        public async Task<IActionResult> Create(Usuario usuario)
+        public async Task<IActionResult> Create(UserDTO userDto)
         {
             if (ModelState.IsValid)
             {
-                AppUsuario appUsuario = new AppUsuario
-                {
-                    UserName = usuario.Nombre,
-                    Email = usuario.Email,
-                    Pais = usuario.Pais,
-                    Edad = usuario.Edad,
-                    Salario = usuario.Salario
-                };
+                var appUser = _mapper.Map<AppUsuario>(userDto);
 
-                IdentityResult resultado = await userManager.CreateAsync(appUsuario, usuario.Password);
+                IdentityResult result = await _userManager.CreateAsync(appUser, userDto.Password);
 
-                if (resultado.Succeeded)
+                if (result.Succeeded)
                 {
                     return RedirectToAction("Index");
                 }
                 else
                 {
-                    foreach (IdentityError error in resultado.Errors)
+                    foreach (var error in result.Errors)
                         ModelState.AddModelError("", error.Description);
                 }
             }
-            return View(usuario);
+
+            return View(userDto);
         }
-
-
-        // Mediante Http Get
 
         public async Task<IActionResult> Update(string id)
         {
-            AppUsuario usuario = await userManager.FindByIdAsync(id);
-            if (usuario != null)
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user != null)
             {
-                return View(usuario);
+                var userDto = _mapper.Map<UpdateUserDTO>(user);
+                return View(userDto);
             }
             else
             {
@@ -93,121 +84,83 @@ namespace LibraryProject.Controllers.Identity
             }
         }
 
-        //[HttpPost]
-        //public async Task<IActionResult> Update(string id, string email, string password)
-        //{
-        //    AppUsuario Usuario = await userManager.FindByIdAsync(id);
-
-        //    if (Usuario != null)
-        //    {
-        //        if (!string.IsNullOrEmpty(email))
-        //        {
-        //            Usuario.Email = email;
-        //        }
-        //        else
-        //        {
-        //            ModelState.AddModelError("", "Por favor, el email no puede estar vacio");
-        //        }
-        //        if (!string.IsNullOrEmpty(password))
-        //        {
-        //            Usuario.PasswordHash = passwordHasher.HashPassword(Usuario, password);
-        //        }
-        //        else
-        //        {
-        //            ModelState.AddModelError("", "Por favor, el password no puede estar vacio");
-        //        }
-        //        IdentityResult resultado = await userManager.UpdateAsync(Usuario);
-        //        if (resultado.Succeeded)
-        //        {
-        //            return RedirectToAction("Index");
-        //        }
-        //        else
-        //        {
-        //            Errors(resultado);
-        //        }
-        //    }
-        //    return View(Usuario);
-        //}
-
         [HttpPost]
-        public async Task<IActionResult> Update(string id, string email, string password, string pais, int edad, string salario)
+        public async Task<IActionResult> Update(UpdateUserDTO userDTO)
         {
-            AppUsuario usuario = await userManager.FindByIdAsync(id);
+            var user = await _userManager.FindByIdAsync(userDTO.Id);
 
-            if (usuario != null)
+            if (user == null)
+                return RedirectToAction("Index");
+
+            // Validación de Email
+            if (string.IsNullOrWhiteSpace(userDTO.Email))
             {
-                IdentityResult emailValido = null;
-                if (!string.IsNullOrEmpty(email))
-                {
-                    emailValido = await userValidator.ValidateAsync(userManager, usuario);
-                    if (emailValido.Succeeded)
-                        usuario.Email = email;
-                    else
-                    {
-                        Errors(emailValido);
-                    }
-                }
-                else
-                {
-                    ModelState.AddModelError("", "El Email no puede estar vacio");
-                }
-
-                IdentityResult passValido = null;
-                if (!string.IsNullOrEmpty(password))
-                {
-                    passValido = await passwordValidator.ValidateAsync(userManager, usuario, password);
-                    if (passValido.Succeeded)
-                        usuario.PasswordHash = passwordHasher.HashPassword(usuario, password);
-                    else
-                    {
-                        Errors(passValido);
-                    }
-                }
-
-                usuario.Edad = edad;
-                //Pais miPais;
-                //Enum.TryParse(pais, out miPais);
-                //usuario.Pais = miPais;
-                usuario.Salario = salario;
-
-                IdentityResult resultado = await userManager.UpdateAsync(usuario);
-
-                if (resultado.Succeeded)
-                    return RedirectToAction("Index");
-                else
-                    ModelState.AddModelError("", "No se ha podido actualizar el registro");
-
+                ModelState.AddModelError("", "El Email no puede estar vacío");
+                return View(userDTO);
             }
-            return View(usuario);
-        }
 
+            user.Email = userDTO.Email;
+
+            var validEmail = await _userValidator.ValidateAsync(_userManager, user);
+            if (!validEmail.Succeeded)
+            {
+                Errors(validEmail);
+                return View(userDTO);
+            }
+
+            // Validación de Password (opcional)
+            if (!string.IsNullOrWhiteSpace(userDTO.Password))
+            {
+                var validPass = await _passwordValidator.ValidateAsync(_userManager, user, userDTO.Password);
+                if (!validPass.Succeeded)
+                {
+                    Errors(validPass);
+                    return View(userDTO);
+                }
+
+                user.PasswordHash = _passwordHasher.HashPassword(user, userDTO.Password);
+            }
+
+            // AutoMapper para otras propiedades
+            _mapper.Map(userDTO, user);  // Mapea Nombre → UserName, Edad, Salario, PaisId, etc.
+
+            var result = await _userManager.UpdateAsync(user);
+
+            if (result.Succeeded)
+                return RedirectToAction("Index");
+
+            Errors(result); // Agrega errores al ModelState
+            return View(userDTO);
+        }
+        
         [HttpPost]
         public async Task<IActionResult> Delete(string id)
         {
-            AppUsuario Usuario = await userManager.FindByIdAsync(id);
-            if (Usuario != null)
-            {
-                IdentityResult resultado = await userManager.DeleteAsync(Usuario);
-                if (resultado.Succeeded)
-                    return RedirectToAction("Index");
-                else
-                {
-                    Errors(resultado);
-                }
-            }
-            else
+            var user = await _userManager.FindByIdAsync(id);
+
+            if (user == null)
             {
                 ModelState.AddModelError("", "Usuario no encontrado");
+                return View("Index", _userManager.Users);
             }
-            return View("Index", userManager.Users);
+
+            // Intentar eliminar
+            var result = await _userManager.DeleteAsync(user);
+
+            if (result.Succeeded)
+            {
+                return RedirectToAction("Index");
+            }
+
+            // Si falla, mostrar errores
+            Errors(result);
+            return View("Index", _userManager.Users);
         }
 
-        private void Errors(IdentityResult resultado)
+        private void Errors(IdentityResult result)
         {
-            foreach (IdentityError error in resultado.Errors)
+            foreach (IdentityError error in result.Errors)
                 ModelState.AddModelError("", error.Description);
         }
-
     }
 }
-

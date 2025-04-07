@@ -1,3 +1,4 @@
+using LibraryProject.Domain.Entities.UserAttributes;
 using LibraryProject.Infraestructure.Interface;
 using LibraryProject.Infraestructure.Repository;
 using LibraryProject.Models;
@@ -25,6 +26,31 @@ builder.Services.AddIdentity<AppUsuario, IdentityRole>()
     .AddDefaultTokenProviders();
 
 
+
+
+
+builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
+
+
+
+
+
+
+// Mapper
+builder.Services.AddAutoMapper(typeof(MappingsProfile));
+// Injection
+builder.Services.AddInjection(builder.Configuration);
+
+
+
+// Ruta de autenticacion - Si se cambia debe hacerse manualmente
+builder.Services.ConfigureApplicationCookie(options => {
+    options.Cookie.Name = ".AspNetCore.identity.Application";
+    // Se almacena durante 20 minutos en el navegador
+    options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
+    options.SlidingExpiration = true;
+});
+
 // Esta funcion esta asociada a la politica de contraseñas de identity
 builder.Services.Configure<IdentityOptions>(options =>
 {
@@ -37,11 +63,6 @@ builder.Services.Configure<IdentityOptions>(options =>
     options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
 });
 
-// Establecer la politica de password personalizada en clase PoliticaPassPersonalizada
-builder.Services.AddTransient<IPasswordValidator<AppUsuario>, PoliticaPassPersonalizada>();
-builder.Services.AddTransient<IUserValidator<AppUsuario>, PoliticaUsuarioEmailPersonalizada>();
-
-builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
 
 
 // -- Es importante registrar los servicio en esta seccion
@@ -50,48 +71,31 @@ builder.Services.AddTransient<IAuthorizationHandler, ControladorPermitirUsuarios
 // Registrar la clase de autorizacion por IAuthorizationHandler con la clase o servicio PermitirControladorPrivado
 builder.Services.AddTransient<IAuthorizationHandler, PermitirControladorPrivado>();
 
-// Ruta de autenticacion - Si se cambia debe hacerse manualmente
-builder.Services.ConfigureApplicationCookie(options => {
-    options.Cookie.Name = ".AspNetCore.identity.Application";
-    // Se almacena durante 20 minutos en el navegador
-    options.ExpireTimeSpan = TimeSpan.FromMinutes(20);
-    options.SlidingExpiration = true;
-});
 
+// Establecer la politica de password personalizada en clase PoliticaPassPersonalizada
+builder.Services.AddTransient<IPasswordValidator<AppUsuario>, PoliticaPassPersonalizada>();
+builder.Services.AddTransient<IUserValidator<AppUsuario>, PoliticaUsuarioEmailPersonalizada>();
 
-// Mapper
-builder.Services.AddAutoMapper(typeof(MappingsProfile));
-// Injection
-builder.Services.AddInjection(builder.Configuration);
-
-// Politica de servicio 01
+// Politica de servicio 01 para los claims
 builder.Services.AddAuthorization(options =>
 {
+    // Política 1: basada en claims (usuario tiene un permiso)
+    options.AddPolicy("PermitirUsuarios", policy =>
+    {
+        policy.AddRequirements(new PoliticaPermisosUsuario("MiBurritoSabanero"));
+    });
+
+    // Política 2: acceso privado a ciertos usuarios
+    options.AddPolicy("AccesoPrivado", policy =>
+    {
+        policy.AddRequirements(new PoliticaPermitirPrivado());
+    });
+
     // Aqui se establece el nombre de la politica
     options.AddPolicy("Segundo Email", policy =>
     {
         policy.RequireRole("Administración");
-        policy.RequireClaim("segundoemail", "Turbias@gmail.com");
-    });
-});
-
-// Politica de servicio 01
-builder.Services.AddAuthorization(options =>
-{
-    // Aqui se establece el nombre de la politica
-    options.AddPolicy("PermitirUsuarios", policy =>
-    {
-        policy.AddRequirements(new PoliticaPermisosUsuario("espana"));
-    });
-});
-
-// Politica de servicio 03
-builder.Services.AddAuthorization(options =>
-{
-    // Aqui se establece el nombre de la politica
-    options.AddPolicy("AccesoPrivado", policy =>
-    {
-        policy.AddRequirements(new PoliticaPermitirPrivado());
+        policy.RequireClaim("Miburritosabanero@live.com");
     });
 });
 

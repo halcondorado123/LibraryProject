@@ -1,4 +1,7 @@
-﻿using LibraryProject.Models;
+﻿using LibraryProject.Application.DTO.Identity;
+using LibraryProject.Domain.Entities.Location;
+using LibraryProject.Domain.Entities.UserAttributes;
+using LibraryProject.Models;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
@@ -13,7 +16,6 @@ namespace LibraryProject.Controllers.Identity
         }
 
         private UserManager<AppUsuario> userManager;
-        //Realizar la autenticación de los usuario
         private SignInManager<AppUsuario> signInManager;
 
         public AccountController(UserManager<AppUsuario> usrManager, SignInManager<AppUsuario> signinManager)
@@ -22,40 +24,87 @@ namespace LibraryProject.Controllers.Identity
             signInManager = signinManager;
         }
 
-        // Muestra la vista asi no esten autenticados - Para que puedan ser autenticado
         [AllowAnonymous]
         public IActionResult Login(string returnUrl)
         {
-            Login login = new Login();
-            login.ReturnUrl = returnUrl;
-            return View(login);
+            var loginDto = new LoginDTO
+            {
+                ReturnUrl = returnUrl
+            };
+
+            return View(loginDto);
         }
 
         [HttpPost]
         [AllowAnonymous]
-        [ValidateAntiForgeryToken]  // Evita multiples ataques de Hacking durante el proceso de Host
-        public async Task<IActionResult> Login(Login login)
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Login(LoginDTO loginDto)
         {
-
             if (ModelState.IsValid)
             {
-                // Toma la dirección del correo electronico que es proporcionada por el usuario en el inicio de sesion
-                AppUsuario usuario = await userManager.FindByEmailAsync(login.Email);
+                // Buscar al usuario por su correo
+                var usuario = await userManager.FindByEmailAsync(loginDto.Email);
 
                 if (usuario != null)
                 {
-                    await signInManager.SignOutAsync();
-                    // false(1) no ingresar cookie de persistencia o mantenerse incluso despues de cerrado el navegador
-                    // false(2) Para no bloquear la cuenta, cuando falle el inicio de sesion
-                    Microsoft.AspNetCore.Identity.SignInResult resultado = await signInManager.PasswordSignInAsync(usuario, login.Password, false, false);
+                    await signInManager.SignOutAsync(); // Limpiar sesiones previas
+
+                    // Intentar iniciar sesión con las credenciales
+                    var resultado = await signInManager.PasswordSignInAsync(
+                        usuario, loginDto.Password, isPersistent: false, lockoutOnFailure: false
+                    );
 
                     if (resultado.Succeeded)
-                        return Redirect(login.ReturnUrl ?? "/");
-                    else
-                        ModelState.AddModelError("", "Se ha producido un error en el Login");
+                        return Redirect(loginDto.ReturnUrl ?? "/");
+
+                    ModelState.AddModelError("", "Se ha producido un error en el Login");
+                }
+                else
+                {
+                    ModelState.AddModelError("", "El usuario no existe");
                 }
             }
-            return View(login);
+
+            return View(loginDto);
+        }
+
+        [AllowAnonymous]
+        public IActionResult Register()
+        {
+            return View();
+        }
+
+        [HttpPost]
+        [AllowAnonymous]
+        [ValidateAntiForgeryToken]
+        public async Task<IActionResult> Register(RegisterDTO model)
+        {
+            if (ModelState.IsValid)
+            {
+                var usuario = new AppUsuario
+                {
+                    UserName = model.Email,
+                    Email = model.Email,
+                    Edad = model.Edad,
+                    Salario = model.Salario,
+                    Pais = new CountryME { CountryId = model.PaisId }, // Ajusta según tu implementación real
+                };
+
+                var resultado = await userManager.CreateAsync(usuario, model.Password);
+
+                if (resultado.Succeeded)
+                {
+                    await signInManager.SignInAsync(usuario, isPersistent: false);
+                    return RedirectToAction("Index", "Home"); // O a donde prefieras redirigir
+                }
+
+                foreach (var error in resultado.Errors)
+                {
+                    ModelState.AddModelError("", error.Description);
+                }
+            }
+
+            return View(model);
         }
 
         // Cierre de sesión
@@ -71,5 +120,6 @@ namespace LibraryProject.Controllers.Identity
         {
             return View();
         }
+
     }
 }

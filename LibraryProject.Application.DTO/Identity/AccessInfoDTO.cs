@@ -1,6 +1,6 @@
-﻿namespace LibraryProject.Models
+﻿namespace LibraryProject.Application.DTO.Identity
 {
-    public class InfoAccesoApp
+    public class AccessInfoDTO
     {
         public string? NombreUsuario { get; set; }
         public string? FechaHora { get; set; }
