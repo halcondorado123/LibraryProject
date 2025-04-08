@@ -21,13 +21,19 @@
         <form method="post">
             @Html.AntiForgeryToken()
 
-            <input type="hidden" name="RoleId" value="@Model.RoleId" />
-            <input type="hidden" name="RoleName" value="@Model.RoleName" />
+            <!-- ID oculto del rol -->
+            <input type="hidden" name="IdRol" value="@Model.RoleId" />
 
-            <!-- Añadir Usuarios al Rol -->
+            <!-- Nombre editable del rol -->
+            <div class="mb-3">
+                <label for="NombreRol" class="form-label">Nombre del Rol</label>
+                <input type="text" name="NombreRol" id="NombreRol" value="@Model.RoleName" class="form-control" required />
+            </div>
+
+            <!-- Sección: Añadir Usuarios al Rol -->
             <h2 class="bg-primary text-white p-2 rounded">
                 Añadir a @Model.RoleName
-                <span class="badge bg-light text-dark">@Model.NonMembers.Count()</span>
+                <span class="badge bg-light text-dark">@Model.NonMembers?.Count() ?? 0</span>
             </h2>
 
             <div class="table-responsive">
@@ -39,7 +45,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if (!Model.NonMembers.Any())
+                        @if (!Model.NonMembers?.Any() ?? true)
                         {
                             <tr><td colspan="2" class="text-center">No hay usuarios disponibles para agregar.</td></tr>
                         }
@@ -59,10 +65,10 @@
                 </table>
             </div>
 
-            <!-- Eliminar Usuarios del Rol -->
+            <!-- Sección: Eliminar Usuarios del Rol -->
             <h2 class="bg-danger text-white p-2 rounded">
                 Eliminar de @Model.RoleName
-                <span class="badge bg-light text-dark">@Model.Members.Count()</span>
+                <span class="badge bg-light text-dark">@Model.Members?.Count() ?? 0</span>
             </h2>
 
             <div class="table-responsive">
@@ -74,7 +80,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        @if (!Model.Members.Any())
+                        @if (!Model.Members?.Any() ?? true)
                         {
                             <tr><td colspan="2" class="text-center">No hay usuarios para eliminar.</td></tr>
                         }

@@ -1,4 +1,6 @@
-﻿namespace LibraryProject.Domain.Entities.Location
+﻿using System.ComponentModel.DataAnnotations.Schema;
+
+namespace LibraryProject.Domain.Entities.Location
 {
     public class RegionME
     {

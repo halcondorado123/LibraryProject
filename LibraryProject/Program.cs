@@ -15,7 +15,7 @@ builder.Services.AddRazorPages();
 // -------------------------------------------------------------------
 builder.Services
     .AddCustomDbContexts(builder.Configuration)       // DbContext y cadenas de conexión
-    .AddCustomIdentity();                             // Identity Core + EF
+    .AddCustomIdentity();                              // Identity Core + EF
 
 builder.Services
     .AddCustomIdentitySettings()                      // Configuración de contraseña, email, etc.
@@ -27,8 +27,6 @@ builder.Services
 
 builder.Services.AddAutoMapper(typeof(MappingsProfile)); // AutoMapper
 
-builder.Services.AddCustomDbContexts(builder.Configuration)
-                .AddCustomIdentity();
 
 // -------------------------------------------------------------------
 // 3. Construcción de la aplicación

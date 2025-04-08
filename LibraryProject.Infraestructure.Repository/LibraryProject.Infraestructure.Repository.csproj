@@ -11,6 +11,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\LibraryProject.Application.Interface\LibraryProject.Application.Interface.csproj" />
     <ProjectReference Include="..\LibraryProject.Domain.Entities\LibraryProject.Domain.Entities.csproj" />
     <ProjectReference Include="..\LibraryProject.Infraestructure.Data\LibraryProject.Infraestructure.Data.csproj" />
     <ProjectReference Include="..\LibraryProject.Infraestructure.Interface\LibraryProject.Infraestructure.Interface.csproj" />

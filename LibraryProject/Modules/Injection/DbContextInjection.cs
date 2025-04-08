@@ -9,7 +9,10 @@ namespace LibraryProject.Modules
         public static IServiceCollection AddCustomDbContexts(this IServiceCollection services, IConfiguration configuration)
         {
             services.AddDbContext<AppDbContext>(options =>
-                options.UseSqlServer(configuration.GetConnectionString("SQLConnection")));
+                options.UseSqlServer(
+                    configuration.GetConnectionString("SQLConnection"),
+                    x => x.MigrationsAssembly("LibraryProject.Infraestructure.Data")
+                ));
 
             return services;
         }

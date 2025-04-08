@@ -1,10 +1,16 @@
 ﻿@model LibraryProject.Application.DTO.Identity.InitialDTO.LoginDTO
+@* @section Scripts {
+    <partial name="_ValidationScriptsPartial" />
+} *@
 
 <style>
     /* Estilos para la pantalla dividida */
     .split-container {
         display: flex;
         height: 100vh;
+        width: 100%;
+        margin: 0;
+        padding: 0;
     }
 
     .left-column {
@@ -12,9 +18,8 @@
         background: linear-gradient(45deg, #0000 calc(25%/3), #2f6328 0 calc(50%/3), #0000 0 calc(250%/3), #2f6328 0 calc(275%/3), #0000 0), linear-gradient(45deg, #2f6328 calc(25%/3), #0000 0 calc(50%/3), #2f6328 0 25%, #0000 0 75%, #2f6328 0 calc(250%/3), #0000 0 calc(275%/3), #2f6328 0), linear-gradient(-45deg, #0000 calc(25%/3), #2f6328 0 calc(50%/3), #0000 0 calc(250%/3), #2f6328 0 calc(275%/3), #0000 0), linear-gradient(-45deg, #2f6328 calc(25%/3), #0000 0 calc(50%/3), #2f6328 0 25%, #0000 0 75%, #2f6328 0 calc(250%/3), #0000 0 calc(275%/3), #2f6328 0), #3ed05b;
         background-size: 76px 76px;
         background-position: 0 0, 38px 38px;
-        background-repeat: repeat; /* Asegurando que el patrón se repita */
+        background-repeat: repeat;
     }
-
 
     .right-column {
         flex: 1;
@@ -28,44 +33,73 @@
         width: 100%;
         max-width: 350px;
         text-align: center;
+        padding: 30px;
+        border-radius: 8px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
     }
 
         .login-container h2 {
-            margin-bottom: 20px;
+            margin-bottom: 30px;
+            color: #333;
         }
 
     .form-group {
-        margin-bottom: 15px;
+        margin-bottom: 20px;
+        text-align: left;
+    }
+
+        .form-group label {
+            font-weight: 500;
+            margin-bottom: 8px;
+            display: block;
+        }
+
+    .form-control {
+        padding: 10px;
+        border-radius: 5px;
+        border: 1px solid #ddd;
     }
 
     .btn-login {
         width: 100%;
+        padding: 12px;
+        background-color: #2f6328;
+        border-color: #2f6328;
+        font-size: 16px;
+        font-weight: 500;
     }
+
+        .btn-login:hover {
+            background-color: #3ed05b;
+            border-color: #3ed05b;
+        }
 </style>
 
 <div class="split-container">
     <div class="left-column"></div>
-
     <div class="right-column">
         <div class="login-container">
             <h2>Iniciar Sesión</h2>
             <form asp-action="Login" method="post">
                 <input type="hidden" asp-for="ReturnUrl" />
-
                 <div class="form-group">
-                    <label asp-for="Email"></label>
+                    <label asp-for="Email">Correo electrónico</label>
                     <input asp-for="Email" class="form-control" placeholder="Ingresa tu email" />
+                    <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
-
                 <div class="form-group">
-                    <label asp-for="Password"></label>
+                    <label asp-for="Password">Contraseña</label>
                     <input asp-for="Password" type="password" class="form-control" placeholder="Ingresa tu contraseña" />
+                    <span asp-validation-for="Password" class="text-danger"></span>
                 </div>
-
-                <div class="text-danger" asp-validation-summary="All"></div>
-
+                <div class="text-danger" asp-validation-summary="ModelOnly"></div>
                 <button class="btn btn-primary btn-login mt-3" type="submit">Iniciar Sesión</button>
             </form>
         </div>
     </div>
 </div>
+
+@section Scripts {
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+}

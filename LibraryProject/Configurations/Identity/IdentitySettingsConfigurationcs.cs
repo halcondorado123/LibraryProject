@@ -25,7 +25,7 @@ namespace LibraryProject.Configurations.Identity
                 options.Password.RequireUppercase = true;
                 options.Password.RequireDigit = true;
                 options.User.RequireUniqueEmail = true;
-                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ";
+                options.User.AllowedUserNameCharacters = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789-._@";
             });
 
             // Políticas personalizadas

@@ -1,13 +1,10 @@
 ﻿using System.ComponentModel.DataAnnotations.Schema;
 using System.ComponentModel.DataAnnotations;
-using static LibraryProject.Domain.Entities.Library.BookME;
 
 namespace LibraryProject.Domain.Entities.Library
-{
-    public class CommentsME
-    {
+{ 
         [Table("COMMENTS", Schema = "LIB")]
-        public class Commentary
+        public class CommentsME
         {
             [Key]
             public int CommentaryId { get; set; }
@@ -31,9 +28,7 @@ namespace LibraryProject.Domain.Entities.Library
             [Required]
             public Guid BookId { get; set; }
 
-            // Relación N:1
             [ForeignKey("BookId")]
             public BookME Book { get; set; } = null!;
-        }
     }
 }

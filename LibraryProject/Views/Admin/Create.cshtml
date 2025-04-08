@@ -1,4 +1,5 @@
-@model LibraryProject.Models.Usuario
+@model LibraryProject.Application.DTO.Identity.InitialDTO.RegisterDTO
+
 @{
     ViewData["Title"] = "Crear Usuario";
 }
@@ -59,19 +60,16 @@
 
                     <div class="col-md-6 mb-3">
                         <div class="form-group">
-                            <label asp-for="Pais" class="form-label">País</label>
-                            @* <div class="input-group">
-                                <span class="input-group-text"><i class="fas fa-globe"></i></span>
-                                <select asp-for="Pais" class="form-select" asp-items="@new SelectList(Enum.GetNames(typeof(Country)))">
-                                    <option selected disabled value="Select">Selecciona un país</option>
-                                </select>
-                            </div> *@
-                            <span asp-validation-for="Pais" class="text-danger"></span>
+                            <label asp-for="ConfirmPassword" class="form-label">Confirmar Contraseña</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-lock"></i></span>
+                                <input asp-for="ConfirmPassword" type="password" class="form-control" placeholder="******" />
+                            </div>
+                            <span asp-validation-for="ConfirmPassword" class="text-danger"></span>
                         </div>
                     </div>
-                </div>
 
-                <div class="row">
+                 <div class="row">
                     <div class="col-md-6 mb-3">
                         <div class="form-group">
                             <label asp-for="Edad" class="form-label">Edad</label>

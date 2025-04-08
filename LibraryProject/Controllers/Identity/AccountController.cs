@@ -33,7 +33,6 @@ namespace LibraryProject.Controllers.Identity
 
             return View(loginDto);
         }
-
         [HttpPost]
         [AllowAnonymous]
         [ValidateAntiForgeryToken]
@@ -41,31 +40,41 @@ namespace LibraryProject.Controllers.Identity
         {
             if (ModelState.IsValid)
             {
-                // Buscar al usuario por su correo
-                var usuario = await userManager.FindByEmailAsync(loginDto.Email);
-
-                if (usuario != null)
+                try
                 {
-                    await signInManager.SignOutAsync(); // Limpiar sesiones previas
+                    // Buscar al usuario por su correo
+                    var usuario = await userManager.FindByEmailAsync(loginDto.Email);
 
-                    // Intentar iniciar sesión con las credenciales
-                    var resultado = await signInManager.PasswordSignInAsync(
-                        usuario, loginDto.Password, isPersistent: false, lockoutOnFailure: false
-                    );
+                    if (usuario != null)
+                    {
+                        await signInManager.SignOutAsync(); // Limpiar sesiones previas
 
-                    if (resultado.Succeeded)
-                        return Redirect(loginDto.ReturnUrl ?? "/");
+                        // Intentar iniciar sesión con las credenciales
+                        var resultado = await signInManager.PasswordSignInAsync(
+                            usuario, loginDto.Password, isPersistent: false, lockoutOnFailure: false
+                        );
 
-                    ModelState.AddModelError("", "Se ha producido un error en el Login");
+                        if (resultado.Succeeded)
+                            return Redirect(loginDto.ReturnUrl ?? "/");
+
+                        ModelState.AddModelError("", "Se ha producido un error en el Login");
+                    }
+                    else
+                    {
+                        ModelState.AddModelError("", "El usuario no existe");
+                    }
                 }
-                else
+                catch (Exception ex)
                 {
-                    ModelState.AddModelError("", "El usuario no existe");
+                    // Aquí podrías loguear el error con algún servicio de logging (como Serilog, NLog, etc.)
+                    ModelState.AddModelError("", "Ha ocurrido un error inesperado. Intente nuevamente.");
+                    Console.WriteLine(ex); // Solo para desarrollo, evita dejar esto en producción
                 }
             }
 
             return View(loginDto);
         }
+
 
         [AllowAnonymous]
         public IActionResult Register()
@@ -85,8 +94,7 @@ namespace LibraryProject.Controllers.Identity
                     UserName = model.Email,
                     Email = model.Email,
                     Edad = model.Edad,
-                    Salario = model.Salario,
-                    Pais = new CountryME { CountryId = model.PaisId }, // Ajusta según tu implementación real
+                    Salario = model.Salario
                 };
 
                 var resultado = await userManager.CreateAsync(usuario, model.Password);
