@@ -228,6 +228,17 @@
 
                                         <!-- Formulario oculto para eliminar -->
                                         <form id="deleteForm-@Usuario.Id" asp-action="Delete" asp-route-id="@Usuario.Id" method="post" style="display: none;"></form>
+
+                                        <button type="button"
+                                                class="btn btn-sm btn-outline-info"
+                                                data-bs-toggle="modal"
+                                                data-bs-target="#userModal"
+                                                data-username="@Usuario.UserName"
+                                                data-email="@Usuario.Email"
+                                                data-edad="@Usuario.Edad">
+                                            <i class="fas fa-eye"></i> Ver
+                                        </button>
+
                                     </td>
                                 </tr>
                             }
@@ -257,6 +268,31 @@
                             </li>
                         </ul>
                     </nav>
+
+                    <!-- Modal para mostrar detalles del usuario -->
+                    <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered">
+                            <div class="modal-content shadow-lg">
+                                <div class="modal-header bg-primary text-white">
+                                    <h5 class="modal-title" id="userModalLabel">Detalles del Usuario</h5>
+                                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+                                </div>
+                                <div class="modal-body">
+                                    <div class="card">
+                                        <div class="card-body">
+                                            <h5 class="card-title"><i class="fas fa-user me-2"></i><span id="modalUserName"></span></h5>
+                                            <p class="card-text"><i class="fas fa-envelope me-2"></i><span id="modalEmail"></span></p>
+                                            <p class="card-text"><i class="fas fa-birthday-cake me-2"></i><span id="modalEdad"></span> años</p>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="modal-footer">
+                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
 
             </div>
         </div>
@@ -321,6 +357,18 @@
                 }
             });
         }
+
+        // Mostrar datos del usuario en el modal
+        // Mostrar datos del usuario en el modal
+    var userModal = document.getElementById('userModal');
+    userModal.addEventListener('show.bs.modal', function (event) {
+        var button = event.relatedTarget;
+
+        document.getElementById('modalUserName').textContent = button.getAttribute('data-username');
+        document.getElementById('modalEmail').textContent = button.getAttribute('data-email');
+        document.getElementById('modalEdad').textContent = button.getAttribute('data-edad');
+    });
+
     </script>
 </body>
 </html>

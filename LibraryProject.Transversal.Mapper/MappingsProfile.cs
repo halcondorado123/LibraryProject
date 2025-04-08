@@ -37,6 +37,9 @@ namespace LibraryProject.Transversal.Mapper
             CreateMap<AppUsuario, LoginDTO>().ReverseMap();
             CreateMap<ModifyRoleDTO, UpdateRoleDTO>();
 
+            CreateMap<UpdateUserDTO, AppUsuario>()
+    .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Nombre));
+
             // AppUsuario -> UpdateUserDTO
             CreateMap<AppUsuario, UpdateUserDTO>()
                 .ForMember(dest => dest.Nombre, opt => opt.MapFrom(src => src.UserName));

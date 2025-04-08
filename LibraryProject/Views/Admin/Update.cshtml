@@ -34,6 +34,17 @@
 
                     <div class="col-md-6 mb-3">
                         <div class="form-group">
+                            <label asp-for="Nombre" class="form-label">Nombre de Usuario</label>
+                            <div class="input-group">
+                                <span class="input-group-text"><i class="fas fa-user"></i></span>
+                                <input asp-for="Nombre" class="form-control" readonly />
+                            </div>
+                        </div>
+                    </div>
+
+
+                    <div class="col-md-6 mb-3">
+                        <div class="form-group">
                             <label asp-for="Email" class="form-label">Email</label>
                             <div class="input-group">
                                 <span class="input-group-text"><i class="fas fa-envelope"></i></span>

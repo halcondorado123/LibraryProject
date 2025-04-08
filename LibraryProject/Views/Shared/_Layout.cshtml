@@ -134,28 +134,18 @@
             </li>
 
             <li class="nav-item">
-                <a href="#" class="nav-link text-white" id="userMenuLink">
+                <a asp-controller="Admin" asp-action="Index" class="nav-link text-white" id="userMenuLink">
                     <svg class="bi me-2" width="16" height="16"><use xlink:href="#speedometer2"></use></svg>
                     Usuario
                 </a>
-                <ul class="sub-menu">
-                    <li><a asp-controller="Admin" asp-action="Index" class="nav-link text-white">Busqueda</a></li>
-                    <li><a asp-controller="Admin" asp-action="Create" class="nav-link text-white">Crear Usuario</a></li>
-                    <li><a asp-controller="Admin" asp-action="Update" class="nav-link text-white">Modificar Usuario</a></li>
-                </ul>
             </li>
             <li class="nav-item">
                 <a asp-controller="Role" asp-action="Index" class="nav-link text-white">
                     <svg class="bi me-2" width="16" height="16"><use xlink:href="#table"></use></svg>
-                    Roles Empleados
+                    Gestión de roles
                 </a>
             </li>
-            @* <li class="nav-item">
-                <a href="#" class="nav-link text-white">
-                    <svg class="bi me-2" width="16" height="16"><use xlink:href="#grid"></use></svg>
-                    Cambiar contraseña
-                </a>
-            </li> *@
+
         </ul>
         <hr>
         <div class="container mt-5">
