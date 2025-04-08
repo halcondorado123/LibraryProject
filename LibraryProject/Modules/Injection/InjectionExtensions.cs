@@ -1,6 +1,8 @@
 ﻿using LibraryProject.Application.DTO;
 using LibraryProject.Application.Interface.Identity;
+using LibraryProject.Application.Interface.Library;
 using LibraryProject.Application.Services;
+using LibraryProject.Application.Services.Library;
 using LibraryProject.Domain.Core.Library;
 using LibraryProject.Domain.Interface.Library;
 using LibraryProject.Infraestructure.Interface;

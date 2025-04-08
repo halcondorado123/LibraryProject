@@ -223,5 +223,49 @@ namespace LibraryProject.Application.Services.Library
             }
             return response;
         }
+
+        public async Task<Response<BookAvailabilityDto>> GetBookAvailabilityAsync(BookFilterDto filter)
+        {
+            var response = new Response<BookAvailabilityDto>();
+
+            try
+            {
+                var bookResponse = await GetBookByParametersAsync(filter);
+
+                if (!bookResponse.IsSuccess || bookResponse.Data == null)
+                {
+                    response.Data = new BookAvailabilityDto
+                    {
+                        IsAvailable = false,
+                        Message = bookResponse.Message ?? "No book found in the database."
+                    };
+                    response.IsSuccess = true;
+                    return response;
+                }
+
+                var book = bookResponse.Data;
+                var isAvailable = book.IsAvailable && book.Stock > 0;
+
+                response.Data = new BookAvailabilityDto
+                {
+                    IsAvailable = isAvailable,
+                    Message = isAvailable
+                        ? "The book is available."
+                        : "The book exists, but is not available right now.",
+                    Book = book
+                };
+
+                response.IsSuccess = true;
+            }
+            catch (Exception ex)
+            {
+                response.IsSuccess = false;
+                response.Message = "Error evaluating book availability.";
+                _logger.LogError(ex, "Error in GetBookAvailabilityAsync");
+            }
+
+            return response;
+        }
+
     }
 }

@@ -16,5 +16,6 @@ namespace LibraryProject.Application.Interface.Library
         Task<Response<BookDto>> CreateBookAsync(BookDto book);
         Task<Response<UpdateBookDto?>> UpdateBookAsync(UpdateBookDto updatedBookDto);
         Task<Response<bool>> DeleteBookAsync(Guid bookId);
+        Task<Response<BookAvailabilityDto>> GetBookAvailabilityAsync(BookFilterDto filter);
     }
 }
