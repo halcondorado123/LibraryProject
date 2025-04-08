@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 
 namespace LibraryProject.Application.DTO.Identity.RoleDTO
 {
-    public class UserInRoleDto
+    public class UserInRoleDTO
     {
         public string UserId { get; set; }
         public string Email { get; set; }

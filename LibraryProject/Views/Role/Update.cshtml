@@ -18,8 +18,12 @@
     <div class="card shadow-sm p-4">
         <div asp-validation-summary="All" class="alert alert-danger"></div>
 
-        <form method="post">
+        <form asp-action="Update" method="post">
             @Html.AntiForgeryToken()
+
+            <div class="mb-4">
+                <input type="text" id="filtroUsuarios" class="form-control" placeholder="Buscar usuario por email...">
+            </div>
 
             <!-- ID oculto del rol -->
             <input type="hidden" name="IdRol" value="@Model.RoleId" />
@@ -33,7 +37,7 @@
             <!-- Sección: Añadir Usuarios al Rol -->
             <h2 class="bg-primary text-white p-2 rounded">
                 Añadir a @Model.RoleName
-                <span class="badge bg-light text-dark">@Model.NonMembers?.Count() ?? 0</span>
+                <span class="badge bg-light text-dark">@((Model.NonMembers != null) ? Model.NonMembers.Count() : 0)</span>
             </h2>
 
             <div class="table-responsive">
@@ -68,7 +72,7 @@
             <!-- Sección: Eliminar Usuarios del Rol -->
             <h2 class="bg-danger text-white p-2 rounded">
                 Eliminar de @Model.RoleName
-                <span class="badge bg-light text-dark">@Model.Members?.Count() ?? 0</span>
+                <span class="badge bg-light text-dark">@((Model.Members != null) ? Model.Members.Count() : 0)</span>
             </h2>
 
             <div class="table-responsive">
@@ -82,7 +86,7 @@
                     <tbody>
                         @if (!Model.Members?.Any() ?? true)
                         {
-                            <tr><td colspan="2" class="text-center">No hay usuarios para eliminar.</td></tr>
+                            <tr class="no-usuarios-msg"><td colspan="2" class="text-center">No hay usuarios para eliminar.</td></tr>
                         }
                         else
                         {
@@ -106,3 +110,34 @@
         </form>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const filtroInput = document.getElementById("filtroUsuarios");
+
+        filtroInput.addEventListener("input", function () {
+            const filter = this.value.toLowerCase();
+
+            // Seleccionar todas las filas de ambas tablas (NonMembers y Members)
+            const filas = document.querySelectorAll("tbody tr");
+
+            filas.forEach(fila => {
+                const emailCell = fila.querySelector("td:first-child"); // Primera celda: Email
+                if (emailCell) {
+                    const email = emailCell.textContent.toLowerCase();
+                    const visible = email.includes(filter);
+
+                    // Si es una fila de usuarios (y no el mensaje de "no hay usuarios")
+                    if (fila.querySelector("input[type='checkbox']")) {
+                        fila.style.display = visible ? "" : "none";
+                    }
+                }
+            });
+        });
+    });
+
+    // Oculta el mensaje de "no hay usuarios" cuando hay texto en el filtro
+    document.querySelectorAll(".no-usuarios-msg").forEach(msg => {
+        msg.style.display = filter ? "none" : "";
+    });
+</script>

@@ -6,12 +6,9 @@ using System.Threading.Tasks;
 
 namespace LibraryProject.Application.DTO.Identity.RoleDTO
 {
-    public class UpdateRoleDTO
+    public class UserWithRoleDTO
     {
-        public string RoleId { get; set; }
+        public string UserName { get; set; }
         public string RoleName { get; set; }
-        public List<UserInRoleDTO> Members { get; set; }
-        public List<UserInRoleDTO> NonMembers { get; set; }
-
     }
 }
