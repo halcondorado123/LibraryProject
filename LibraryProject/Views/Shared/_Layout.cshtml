@@ -6,11 +6,11 @@
     <link href="~/twitter-bootstrap/css/bootstrap.css" rel="stylesheet" />
     <style>
         .icon-image {
-            width: 40px; /* Ajusta el tamaño según sea necesario */
-            height: 40px; /* Ajusta el tamaño según sea necesario */
+            width: 40px;
+            height: 40px;
             margin: auto 10px;
             object-fit: cover;
-            border-radius: 50%; /* Hace que la imagen sea circular */
+            border-radius: 50%;
         }
 
         /* Estilo del sidebar */
@@ -21,104 +21,101 @@
             width: 280px;
             height: 100vh;
             flex: 1;
-            background: linear-gradient(45deg, #0000 calc(25%/3), #2f6328 0 calc(50%/3), #0000 0 calc(250%/3), #2f6328 0 calc(275%/3), #0000 0), linear-gradient(45deg, #2f6328 calc(25%/3), #0000 0 calc(50%/3), #2f6328 0 25%, #0000 0 75%, #2f6328 0 calc(250%/3), #0000 0 calc(275%/3), #2f6328 0), linear-gradient(-45deg, #0000 calc(25%/3), #2f6328 0 calc(50%/3), #0000 0 calc(250%/3), #2f6328 0 calc(275%/3), #0000 0), linear-gradient(-45deg, #2f6328 calc(25%/3), #0000 0 calc(50%/3), #2f6328 0 25%, #0000 0 75%, #2f6328 0 calc(250%/3), #0000 0 calc(275%/3), #2f6328 0), #3ed05b;
-            background-size: 76px 76px;
+            background-image: url('/img/magicpattern-grid-pattern-1743660792499.png');
             background-position: 0 0, 38px 38px;
-            background-repeat: repeat; /* Asegurando que el patrón se repita */
+            background-repeat: repeat;
             padding: 1rem;
             z-index: 100;
-            transition: transform 0.3s ease; /* Transición suave para el movimiento */
+            transition: transform 0.3s ease;
         }
 
         /* Estilo para ocultar el sidebar */
         .sidebar-hidden {
-            transform: translateX(-100%); /* Desplaza el sidebar fuera de la pantalla */
+            transform: translateX(-100%);
         }
 
         /* Estilo para mostrar el sidebar */
         .sidebar-visible {
-            transform: translateX(0); /* Muestra el sidebar en su posición original */
+            transform: translateX(0);
         }
 
         /* Estilo para el botón de toggle */
         .toggle-btn {
             position: absolute;
-            top: 50%; /* Centra verticalmente */
-            right: -20px; /* Mueve el botón hacia el borde derecho del sidebar */
-            transform: translateY(-50%); /* Ajusta la posición para centrar verticalmente */
-            z-index: 110; /* Asegura que el botón esté encima del sidebar */
-            border-radius: 50%; /* Hace que el botón sea redondo */
-            width: 40px; /* Ancho del botón */
-            height: 40px; /* Altura del botón */
+            top: 50%;
+            right: -20px;
+            transform: translateY(-50%);
+            z-index: 110;
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
             display: flex;
             align-items: center;
             justify-content: center;
-            background-color: #007bff; /* Color de fondo del botón */
-            color: white; /* Color del ícono */
-            border: none; /* Elimina el borde del botón */
-            cursor: pointer; /* Cambia el cursor al pasar sobre el botón */
-            transition: background-color 0.3s ease; /* Transición suave para el color de fondo */
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            transition: background-color 0.3s ease;
         }
 
             /* Cambia el color del botón al pasar sobre él */
             .toggle-btn:hover {
-                background-color: #0056b3; /* Cambia el color al pasar sobre el botón */
+                background-color: #0056b3;
             }
 
         /* Icono de flecha hacia la derecha cuando el sidebar está oculto */
         .sidebar-hidden .toggle-btn .bi-chevron-left {
-            display: none; /* Oculta la flecha hacia la izquierda */
+            display: none;
         }
 
         /* Icono de flecha hacia la izquierda cuando el sidebar está visible */
         .sidebar-visible .toggle-btn .bi-chevron-right {
-            display: none; /* Oculta la flecha hacia la derecha */
+            display: none;
         }
 
         .content-container {
             display: flex;
             flex-direction: column;
-            align-items: center; /* Centra todo el contenido dentro */
+            align-items: center;
             justify-content: center;
         }
 
         /* Ajusta el margen y el ancho del contenedor cuando el sidebar está oculto */
         .sidebar-hidden ~ .content-container {
-            margin-left: 0; /* Elimina el margen izquierdo cuando el sidebar está oculto */
-            width: 100%; /* Ajusta el ancho al 100% cuando el sidebar está oculto */
+            margin-left: 0;
+            width: 100%;
         }
         /* CSS para ocultar los submenús */
         .sub-menu {
-            display: none; /* Oculta el submenú por defecto */
-            padding-left: 1rem; /* Añade un margen izquierdo para el submenú */
+            display: none;
+            padding-left: 1rem;
         }
 
             .sub-menu.show {
-                display: block; /* Muestra el submenú cuando se le añade la clase .show */
+                display: block;
             }
 
         .nav-link.active {
-            background-color: #495057; /* Ajusta el color de fondo activo */
+            background-color: #495057;
         }
 
         .table-container {
             display: flex;
-            justify-content: center; /* Centra la tabla horizontalmente */
-            align-items: center; /* Centra la tabla verticalmente */
+            justify-content: center;
+            align-items: center;
             width: 100%;
             padding: 20px;
         }
 
             .table-container table {
-                max-width: 90%; /* Controla el ancho máximo de la tabla */
+                max-width: 90%;
             }
-
-
     </style>
 </head>
 <body>
-    <!-- Button to toggle the sidebar -->
-    <div class="sidebar d-flex flex-column flex-shrink-0 text-white bg-dark sidebar-visible" id="sidebar">
+    <!-- Sidebar con verificación de autenticación -->
+    <div class="sidebar d-flex flex-column flex-shrink-0 text-white bg-dark @(User.Identity.IsAuthenticated ? "sidebar-visible" : "sidebar-hidden")" id="sidebar">
         <a href="/" class="d-flex align-items-center mb-3 mb-md-0 me-md-auto text-white text-decoration-none sidebar-header">
             <!-- Imagen pequeña a la izquierda del texto -->
             <img src="/img/istockphoto-845329690-612x612.jpg" alt="Icon" class="icon-image" />
@@ -158,7 +155,6 @@
                     Comentarios
                 </a>
             </li>
-
         </ul>
         <hr>
         <div class="container mt-5">
@@ -180,14 +176,15 @@
             </div>
         </div>
 
-        <!-- Botón de toggle incrustado en el sidebar -->
-        <button class="toggle-btn" id="toggleSidebar">
-            <i class="bi bi-chevron-left"></i> <!-- Icono de flecha hacia la izquierda por defecto -->
-            <i class="bi bi-chevron-right"></i> <!-- Icono de flecha hacia la derecha cuando está oculto -->
+        <!-- Botón de toggle condicionado por autenticación -->
+        <button class="toggle-btn" id="toggleSidebar" style="@(User.Identity.IsAuthenticated ? "" : "display: none;")">
+            <i class="bi bi-chevron-left"></i>
+            <i class="bi bi-chevron-right"></i>
         </button>
     </div>
 
-    <div class="content-container">
+    <!-- Contenedor de contenido con margen ajustado por autenticación -->
+    <div class="content-container" style="margin-left: @(User.Identity.IsAuthenticated ? "280px" : "0");">
         @RenderBody()
     </div>
 
@@ -197,36 +194,32 @@
     <script>
         document.addEventListener('DOMContentLoaded', function () {
             var sidebar = document.getElementById('sidebar');
-            var content = document.querySelector('.content-container'); // Asegúrate de usar el nombre correcto de la clase
+            var content = document.querySelector('.content-container');
             var toggleButton = document.getElementById('toggleSidebar');
             var userMenuLink = document.getElementById('userMenuLink');
-            var subMenu = userMenuLink.nextElementSibling; // Asumiendo que el submenú es el siguiente elemento en el DOM
-
-            // Configura el estado inicial del contenido
-            if (sidebar.classList.contains('sidebar-hidden')) {
-                content.style.marginLeft = '0'; // Ajusta cuando el sidebar está oculto
-            } else {
-                content.style.marginLeft = '280px'; // Ajusta cuando el sidebar está visible
-            }
+            var subMenu = userMenuLink.nextElementSibling;
 
             // Maneja el evento de clic en el botón de toggle
             toggleButton.addEventListener('click', function () {
                 if (sidebar.classList.contains('sidebar-visible')) {
                     sidebar.classList.remove('sidebar-visible');
                     sidebar.classList.add('sidebar-hidden');
-                    content.style.marginLeft = '0'; // Ajusta cuando el sidebar está oculto
+                    content.style.marginLeft = '0';
                 } else {
                     sidebar.classList.remove('sidebar-hidden');
                     sidebar.classList.add('sidebar-visible');
-                    content.style.marginLeft = '280px'; // Ajusta cuando el sidebar está visible
+                    content.style.marginLeft = '280px';
                 }
             });
 
             // Maneja el evento de clic en el enlace del menú de usuario
-            userMenuLink.addEventListener('click', function () {
-                // Alterna la clase 'show' para mostrar u ocultar el submenú
-                subMenu.classList.toggle('show');
-            });
+            if (userMenuLink) {
+                userMenuLink.addEventListener('click', function () {
+                    if (subMenu) {
+                        subMenu.classList.toggle('show');
+                    }
+                });
+            }
         });
     </script>
     @RenderSection("Scripts", required: false)

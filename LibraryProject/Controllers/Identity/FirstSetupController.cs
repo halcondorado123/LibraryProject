@@ -19,7 +19,6 @@ namespace LibraryProject.Controllers.Identity
             _roleManager = roleManager;
             _codigoEspecial = configuration["RegistroInicial:CodigoAdministrador"];
         }
-
         [AllowAnonymous]
         public async Task<IActionResult> Index()
         {
@@ -37,7 +36,7 @@ namespace LibraryProject.Controllers.Identity
         [ValidateAntiForgeryToken]
         public async Task<IActionResult> Index(FirstAdminRegisterDTO model)
         {
-            if (_userManager.Users.Any())
+            if (_userManager.Users.Any()) // Si ya hay usuarios, redirigir
             {
                 return RedirectToAction("Login", "Account");
             }
@@ -78,5 +77,8 @@ namespace LibraryProject.Controllers.Identity
 
             return View(model);
         }
+
     }
 }
+
+

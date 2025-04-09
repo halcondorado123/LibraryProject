@@ -114,6 +114,27 @@ namespace LibraryProject.Controllers.Identity
             return View(model);
         }
 
+
+        [HttpGet]
+        public IActionResult FirstSetup()
+        {
+            return View();  // Esto debería retornar la vista de registro
+        }
+
+        [HttpPost]
+        public async Task<IActionResult> FirstSetup(FirstAdminRegisterDTO model)
+        {
+            if (ModelState.IsValid)
+            {
+                // Aquí va la lógica de registro, por ejemplo, crear el administrador.
+            }
+            return View(model);
+        }
+
+
+
+
+
         // Cierre de sesión
         public async Task<IActionResult> Logout()
         {
