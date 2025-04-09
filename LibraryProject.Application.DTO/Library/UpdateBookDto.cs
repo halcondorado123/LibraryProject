@@ -9,6 +9,7 @@
         public string? BookTitle { get; set; }
         public string? Place { get; set; }
         public string? Publisher { get; set; }
+        public string? Observations { get; set; }
         public int Stock { get; set; }
         public bool IsAvailable { get; set; }
     }

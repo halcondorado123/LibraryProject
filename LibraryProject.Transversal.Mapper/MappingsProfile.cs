@@ -5,6 +5,8 @@ using LibraryProject.Application.DTO.Identity.InitialDTO;
 using LibraryProject.Domain.Entities.UserAttributes;
 using LibraryProject.Domain.Entities.Location;
 using LibraryProject.Application.DTO.Identity.RoleDTO;
+using LibraryProject.Application.DTO.Library;
+using LibraryProject.Domain.Entities.Library;
 
 namespace LibraryProject.Transversal.Mapper
 {
@@ -48,6 +50,13 @@ namespace LibraryProject.Transversal.Mapper
             CreateMap<UpdateUserDTO, AppUsuario>()
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Nombre))
                 .ForMember(dest => dest.PasswordHash, opt => opt.Ignore());
+
+            CreateMap<BookME, BookDto>();
+            CreateMap<BookDto, BookME>();
+
+            CreateMap<BookME, BookDto>()
+            .ForMember(dest => dest.Author, opt =>
+                opt.MapFrom(src => $"{src.AuthorFirstName} {src.AuthorLastName}"));
         }
     }
 }

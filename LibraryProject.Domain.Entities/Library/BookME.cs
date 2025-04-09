@@ -37,6 +37,9 @@ namespace LibraryProject.Domain.Entities.Library
         public bool IsAvailable { get; set; }
 
         [Required]
+        public string? Observations { get; set; }
+
+        [Required]
         public int Stock { get; set; }
 
         // Relación 1:N

@@ -14,15 +14,33 @@ namespace LibraryProject.Domain.Core.Library
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<BookME>> GetAllAsync(int page, int pageSize)
+        public async Task<(IEnumerable<BookME> Items, int TotalCount)> GetByParametersAsync(int page, int pageSize, string bookTitle, string authorFirstName, string authorLastName, string theme, 
+                                                                                            string publisher, string place)
         {
-            var books = await _unitOfWork.Books.GetBooksAsync(page, pageSize);
-
-            if (books == null)
-                throw new InvalidOperationException("Failed to retrieve books from the database.");
-
-            return books;
+            return await _unitOfWork.Books.GetFilteredBooksAsync(page, pageSize, bookTitle, authorFirstName, authorLastName, theme, publisher, place);
         }
+
+        public async Task<int> GetFilteredCountAsync(string bookTitle, string authorFirstName, string authorLastName, string theme, string publisher, string place)
+        {
+            return await _unitOfWork.Books.GetFilteredCountAsync(bookTitle, authorFirstName, authorLastName, theme, publisher, place);
+        }
+    
+
+
+
+
+
+
+
+
+
+
+
+        //public async Task<int> GetFilteredCountAsync(string bookTitle, string authorFirstName, string authorLastName,
+        //    string theme, string publisher, string place)
+        //{
+        //    return await _unitOfWork.GetFilteredCountAsync(bookTitle, authorFirstName, authorLastName, theme, publisher, place);
+        //}
 
 
         public async Task<BookME> GetByIdAsync(Guid bookId)
@@ -90,6 +108,13 @@ namespace LibraryProject.Domain.Core.Library
                 throw new KeyNotFoundException($"No book found with ID {bookId} to delete.");
 
             return result;
+        }
+
+
+
+        public Task<IEnumerable<BookME>> GetAllAsync(int page, int pageSize)
+        {
+            throw new NotImplementedException();
         }
     }
 }

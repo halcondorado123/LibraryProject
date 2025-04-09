@@ -28,6 +28,7 @@ builder.Services
 builder.Services.AddAutoMapper(typeof(MappingsProfile)); // AutoMapper
 
 
+
 // -------------------------------------------------------------------
 // 3. Construcción de la aplicación
 // -------------------------------------------------------------------
@@ -57,5 +58,6 @@ app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 
 app.Run();

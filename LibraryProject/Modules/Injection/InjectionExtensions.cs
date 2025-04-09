@@ -22,12 +22,14 @@ namespace LibraryProject.Modules
             services.AddSingleton<IConfiguration>(configuration);
             services.AddScoped<IBooksRepository, BooksRepository>();
             services.AddScoped<IBooksDomain, BooksDomain>();
-            services.AddScoped<IBookApplication, BookApplication>();
             services.AddScoped(typeof(IAppLogger<>), typeof(LoggerAdapter<>));
             services.AddScoped<IUnitOfWork, UnitOfWork>();
             //services.AddScoped<ICountryRepository, CountryRepository>();
             //services.AddScoped<CountryApplication>();
             services.AddScoped<IRoleService, RoleService>();
+            // Repositorio y aplicación
+            services.AddScoped<IBooksRepository, BooksRepository>();
+            services.AddScoped<IBookApplication, BookApplication>();
 
             return services;
         }

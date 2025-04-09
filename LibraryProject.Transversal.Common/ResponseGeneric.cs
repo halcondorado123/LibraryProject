@@ -23,5 +23,6 @@ namespace LibraryProject.Transversal.Common
             IsSuccess = isSuccess;
             Message = message;
         }
+
     }
 }
