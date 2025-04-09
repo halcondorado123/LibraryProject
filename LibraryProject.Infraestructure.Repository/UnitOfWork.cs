@@ -1,4 +1,5 @@
 ﻿using LibraryProject.Infraestructure.Interface;
+using LibraryProject.Infraestructure.Interface.Library;
 
 namespace LibraryProject.Infraestructure.Repository
 {

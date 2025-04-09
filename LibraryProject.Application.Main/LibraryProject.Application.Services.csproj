@@ -17,4 +17,8 @@
     <ProjectReference Include="..\LibraryProject.Transversal.Common\LibraryProject.Transversal.Common.csproj" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Identity\" />
+  </ItemGroup>
+
 </Project>

@@ -11,8 +11,8 @@ namespace LibraryProject.Application.DTO.Identity.AdminDTO
         public string? Id { get; set; }
         public string? Nombre { get; set; }
         public string? Email { get; set; }
+        public string ConfirmPassword { get; set; }
         public string? Password { get; set; }
-        public int? PaisId { get; set; }
         public int? Edad { get; set; }
         public string? Salario { get; set; }
     }

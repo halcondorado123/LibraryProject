@@ -1,19 +1,32 @@
-﻿using LibraryProject.Application.DTO.Library;
-using LibraryProject.Domain.Entities.Library;
+﻿using LibraryProject.Domain.Entities.Library;
 using LibraryProject.Infraestructure.Interface.Library;
-using LibraryProject.Models;
 using Microsoft.EntityFrameworkCore;
 
 namespace LibraryProject.Infraestructure.Repository.Library
 {
     public class BooksRepository : IBooksRepository
     {
-        private readonly LibraryDbContext _dbContext;
+        private readonly AppDbContext _dbContext;
 
-        public BooksRepository(LibraryDbContext dbContext)
+        public BooksRepository(AppDbContext dbContext)
         {
             _dbContext = dbContext;
         }
+
+        public async Task<IEnumerable<BookME>> GetAllAsync()
+        {
+            try
+            {
+                return await _dbContext.Books.ToListAsync();
+            }
+            catch (Exception ex)
+            {
+                // Podrías registrar el error aquí si tienes un sistema de logging
+                Console.WriteLine($"Error al obtener los libros: {ex.Message}");
+                return new List<BookME>(); // O podrías lanzar una excepción personalizada si prefieres
+            }
+        }
+
 
         public async Task<IEnumerable<BookME>> GetBooksAsync(int page, int pageSize)
         {
@@ -30,32 +43,103 @@ namespace LibraryProject.Infraestructure.Repository.Library
             }
         }
 
+        public async Task<(IEnumerable<BookME> Items, int TotalCount)> GetFilteredBooksAsync(int page, int pageSize, string bookTitle, string authorFirstName, string authorLastName,
+                                                                                             string theme, string publisher, string place)
+        {
+            var query = _dbContext.Books.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(bookTitle))
+                query = query.Where(b => b.BookTitle.Contains(bookTitle));
+
+            if (!string.IsNullOrWhiteSpace(authorFirstName))
+                query = query.Where(b => b.AuthorFirstName.Contains(authorFirstName));
+
+            if (!string.IsNullOrWhiteSpace(authorLastName))
+                query = query.Where(b => b.AuthorLastName.Contains(authorLastName));
+
+            if (!string.IsNullOrWhiteSpace(theme))
+                query = query.Where(b => b.Theme.Contains(theme));
+
+            if (!string.IsNullOrWhiteSpace(publisher))
+                query = query.Where(b => b.Publisher.Contains(publisher));
+
+            if (!string.IsNullOrWhiteSpace(place))
+                query = query.Where(b => b.Place.Contains(place));
+
+            var totalCount = await query.CountAsync();
+
+            var items = await query
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToListAsync();
+
+            return (items, totalCount);
+        }
+
+        public async Task<int> GetFilteredCountAsync(string bookTitle, string authorFirstName, string authorLastName, string theme, string publisher, string place)
+        {
+            var query = _dbContext.Books.AsQueryable();
+
+            if (!string.IsNullOrWhiteSpace(bookTitle))
+                query = query.Where(b => b.BookTitle.Contains(bookTitle));
+
+            if (!string.IsNullOrWhiteSpace(authorFirstName))
+                query = query.Where(b => b.AuthorFirstName.Contains(authorFirstName));
+
+            if (!string.IsNullOrWhiteSpace(authorLastName))
+                query = query.Where(b => b.AuthorLastName.Contains(authorLastName));
+
+            if (!string.IsNullOrWhiteSpace(theme))
+                query = query.Where(b => b.Theme.Contains(theme));
+
+            if (!string.IsNullOrWhiteSpace(publisher))
+                query = query.Where(b => b.Publisher.Contains(publisher));
+
+            if (!string.IsNullOrWhiteSpace(place))
+                query = query.Where(b => b.Place.Contains(place));
+
+            return await query.CountAsync();
+        }
+
+
+        public async Task<BookME> CreateCommentAsync(CommentsME entity)
+        {
+            await _dbContext.Comments.AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
+
+            return await _dbContext.Books.FirstOrDefaultAsync(b => b.BookId == entity.BookId);
+        }
+
+
+
+
+
 
         public async Task<BookME?> GetByIdAsync(Guid bookId)
         {
             return await _dbContext.Books.FindAsync(bookId);
         }
 
-        public async Task<BookME?> GetBookByParametersAsync(string? authorFirstName, string? authorLastName, string? theme, string? bookTitle, string? place, string? publisher)
-        {
-            try
-            {
-                var book = await _dbContext.Books.FirstOrDefaultAsync(l =>
-                    (authorFirstName == null || l.AuthorFirstName == authorFirstName) &&
-                    (authorLastName == null || l.AuthorLastName == authorLastName) &&
-                    (theme == null || l.Theme == theme) &&
-                    (bookTitle == null || l.BookTitle == bookTitle) &&
-                    (place == null || l.Place == place) &&
-                    (publisher == null || l.Publisher == publisher)
-                );
+        //public async Task<BookME?> GetBookByParametersAsync(string? authorFirstName, string? authorLastName, string? theme, string? bookTitle, string? place, string? publisher)
+        //{
+        //    try
+        //    {
+        //        var book = await _dbContext.Books.FirstOrDefaultAsync(l =>
+        //            (authorFirstName == null || l.AuthorFirstName == authorFirstName) &&
+        //            (authorLastName == null || l.AuthorLastName == authorLastName) &&
+        //            (theme == null || l.Theme == theme) &&
+        //            (bookTitle == null || l.BookTitle == bookTitle) &&
+        //            (place == null || l.Place == place) &&
+        //            (publisher == null || l.Publisher == publisher)
+        //        );
 
-                return book;
-            }
-            catch (Exception ex)
-            {
-                throw new ApplicationException($"An unexpected exception was thrown {ex}");
-            }
-        }
+        //        return book;
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        throw new ApplicationException($"An unexpected exception was thrown {ex}");
+        //    }
+        //}
 
         public async Task<IEnumerable<BookME>> GetBookByDate(DateTime date)
         {
@@ -165,6 +249,13 @@ namespace LibraryProject.Infraestructure.Repository.Library
             {
                 throw new ApplicationException($"SAn unexpected exception was thrown {ex}");
             }
+        }
+
+
+
+        public Task<BookME> GetBookByParametersAsync(string? authorFirstName, string? authorLastName, string? theme, string? bookTitle, string? place, string? publisher)
+        {
+            throw new NotImplementedException();
         }
     }
 }

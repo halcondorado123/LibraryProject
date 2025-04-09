@@ -39,7 +39,7 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryProject.Transversal.
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryProject.Transversal.Mapper", "LibraryProject.Transversal.Mapper\LibraryProject.Transversal.Mapper.csproj", "{E6682302-22B4-4A8D-A0D2-AF0C0957850F}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "LibraryProject.Infraestructure.Identity", "LibraryProject.Infraestructure.Identity\LibraryProject.Infraestructure.Identity.csproj", "{0CC9332E-7E82-4A95-80F7-43491AA80754}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "LibraryProject.Infraestructure.Identity", "LibraryProject.Infraestructure.Identity\LibraryProject.Infraestructure.Identity.csproj", "{0CC9332E-7E82-4A95-80F7-43491AA80754}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

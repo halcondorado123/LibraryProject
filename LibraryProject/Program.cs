@@ -15,7 +15,7 @@ builder.Services.AddRazorPages();
 // -------------------------------------------------------------------
 builder.Services
     .AddCustomDbContexts(builder.Configuration)       // DbContext y cadenas de conexión
-    .AddCustomIdentity();                             // Identity Core + EF
+    .AddCustomIdentity();                              // Identity Core + EF
 
 builder.Services
     .AddCustomIdentitySettings()                      // Configuración de contraseña, email, etc.
@@ -26,6 +26,8 @@ builder.Services
     .AddAuthorizationHandlers();                      // IAuthorizationHandler personalizados
 
 builder.Services.AddAutoMapper(typeof(MappingsProfile)); // AutoMapper
+
+
 
 // -------------------------------------------------------------------
 // 3. Construcción de la aplicación
@@ -56,5 +58,6 @@ app.MapRazorPages();
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
+
 
 app.Run();

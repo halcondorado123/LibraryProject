@@ -1,9 +1,9 @@
 ﻿using LibraryProject.Domain.Entities.Library;
-using LibraryProject.Domain.Interface;
+using LibraryProject.Domain.Interface.Library;
 using LibraryProject.Infraestructure.Interface;
 
 
-namespace LibraryProject.Domain.Core
+namespace LibraryProject.Domain.Core.Library
 {
     public class BooksDomain : IBooksDomain
     {
@@ -14,15 +14,39 @@ namespace LibraryProject.Domain.Core
             _unitOfWork = unitOfWork;
         }
 
-        public async Task<IEnumerable<BookME>> GetAllAsync(int page, int pageSize)
+        public async Task<(IEnumerable<BookME> Items, int TotalCount)> GetByParametersAsync(int page, int pageSize, string bookTitle, string authorFirstName, string authorLastName, string theme, 
+                                                                                            string publisher, string place)
         {
-            var books = await _unitOfWork.Books.GetBooksAsync(page, pageSize);
-
-            if (books == null)
-                throw new InvalidOperationException("Failed to retrieve books from the database.");
-
-            return books;
+            return await _unitOfWork.Books.GetFilteredBooksAsync(page, pageSize, bookTitle, authorFirstName, authorLastName, theme, publisher, place);
         }
+
+        public async Task<int> GetFilteredCountAsync(string bookTitle, string authorFirstName, string authorLastName, string theme, string publisher, string place)
+        {
+            return await _unitOfWork.Books.GetFilteredCountAsync(bookTitle, authorFirstName, authorLastName, theme, publisher, place);
+        }
+
+        public async Task<bool> CreateCommentAsync(CommentsME entity)
+        {
+            var book = await _unitOfWork.Books.CreateCommentAsync(entity);
+            return book != null;
+        }
+
+
+
+
+
+
+
+
+
+
+
+
+        //public async Task<int> GetFilteredCountAsync(string bookTitle, string authorFirstName, string authorLastName,
+        //    string theme, string publisher, string place)
+        //{
+        //    return await _unitOfWork.GetFilteredCountAsync(bookTitle, authorFirstName, authorLastName, theme, publisher, place);
+        //}
 
 
         public async Task<BookME> GetByIdAsync(Guid bookId)
@@ -91,5 +115,14 @@ namespace LibraryProject.Domain.Core
 
             return result;
         }
+
+
+
+        public Task<IEnumerable<BookME>> GetAllAsync(int page, int pageSize)
+        {
+            throw new NotImplementedException();
+        }
+
+
     }
 }

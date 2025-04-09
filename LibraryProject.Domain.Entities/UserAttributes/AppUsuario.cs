@@ -1,15 +1,17 @@
-﻿using LibraryProject.Domain.Entities.Location;
+﻿using LibraryProject.Domain.Entities.Library;
+using LibraryProject.Domain.Entities.Location;
 using Microsoft.AspNetCore.Identity;
+using System.ComponentModel.DataAnnotations.Schema;
 
 namespace LibraryProject.Domain.Entities.UserAttributes
 {
     public class AppUsuario : IdentityUser
     {
-        // Aqui va vacio. Nos proporciona datos basicos de identidad, si se desean más atributos, se pueden agregar
-
-        public int? PaisId { get; set; }
-        public CountryME? Pais { get; set; }
+        //public CountryME? Pais { get; set; }
         public int? Edad { get; set; }
-        public float? Salario { get; set; }
+        public string? Salario { get; set; }
+
+        // Relación inversa con comentarios
+        public ICollection<CommentsME> Comments { get; set; }
     }
 }

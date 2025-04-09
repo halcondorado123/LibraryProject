@@ -1,9 +1,11 @@
 ﻿using AutoMapper;
 using LibraryProject.Application.DTO.Identity;
 using LibraryProject.Application.DTO.Identity.AdminDTO;
+using LibraryProject.Application.DTO.Identity.InitialDTO;
 using LibraryProject.Domain.Entities.UserAttributes;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.AspNetCore.Mvc.Rendering;
 
 namespace LibraryProject.Controllers.Identity
 {
@@ -15,6 +17,7 @@ namespace LibraryProject.Controllers.Identity
         private IPasswordValidator<AppUsuario> _passwordValidator;
         private IUserValidator<AppUsuario> _userValidator;
 
+
         public AdminController(UserManager<AppUsuario> userManager, IPasswordHasher<AppUsuario> passwordHash, IPasswordValidator<AppUsuario> passwordValidator, IUserValidator<AppUsuario> userValidator, IMapper mapper)
         {
             _userManager = userManager;
@@ -24,7 +27,7 @@ namespace LibraryProject.Controllers.Identity
             _mapper = mapper;
         }
 
-        public IActionResult Index(int page = 1, int pageSize = 5)
+        public IActionResult Index(int page = 1, int pageSize = 10)
         {
             var totalUsers = _userManager.Users.Count(); // Total de usuarios
             var users = _userManager.Users
@@ -41,13 +44,16 @@ namespace LibraryProject.Controllers.Identity
             return View(users);
         }
 
-        public ViewResult Create()
+        [HttpGet]
+        public IActionResult Create()
         {
-            return View();
+            var model = new RegisterDTO(); // el modelo que espera la vista
+            return View(model);
         }
 
+        // VALIDADO
         [HttpPost]
-        public async Task<IActionResult> Create(UserDTO userDto)
+        public async Task<IActionResult> Create(RegisterDTO userDto)
         {
             if (ModelState.IsValid)
             {
@@ -68,6 +74,8 @@ namespace LibraryProject.Controllers.Identity
 
             return View(userDto);
         }
+
+
 
         public async Task<IActionResult> Update(string id)
         {

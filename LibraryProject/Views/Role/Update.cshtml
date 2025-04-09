@@ -1,4 +1,4 @@
-﻿@model RoleEditar
+﻿@model LibraryProject.Application.DTO.Identity.RoleDTO.UpdateRoleDTO
 
 @{
     Layout = "~/Views/Shared/_Layout.cshtml";
@@ -6,7 +6,6 @@
 }
 
 <div class="container-fluid py-4">
-    <!-- Encabezado de la página -->
     <div class="page-header">
         <div class="d-flex justify-content-between align-items-center">
             <h1 class="bg-info text-white p-2 rounded">Actualizar Rol</h1>
@@ -18,33 +17,50 @@
 
     <div class="card shadow-sm p-4">
         <div asp-validation-summary="All" class="alert alert-danger"></div>
-        <form method="post">
-            <input type="hidden" name="NombreRol" value="@Model.Role.Name" />
-            <input type="hidden" name="IdRol" value="@Model.Role.Id" />
 
-            <!-- Añadir Usuarios al Rol -->
-            <h2 class="bg-primary text-white p-2 rounded">Añadir a @Model.Role.Name</h2>
+        <form asp-action="Update" method="post">
+            @Html.AntiForgeryToken()
+
+            <div class="mb-4">
+                <input type="text" id="filtroUsuarios" class="form-control" placeholder="Buscar usuario por email...">
+            </div>
+
+            <!-- ID oculto del rol -->
+            <input type="hidden" name="IdRol" value="@Model.RoleId" />
+
+            <!-- Nombre editable del rol -->
+            <div class="mb-3">
+                <label for="NombreRol" class="form-label">Nombre del Rol</label>
+                <input type="text" name="NombreRol" id="NombreRol" value="@Model.RoleName" class="form-control" required />
+            </div>
+
+            <!-- Sección: Añadir Usuarios al Rol -->
+            <h2 class="bg-primary text-white p-2 rounded">
+                Añadir a @Model.RoleName
+                <span class="badge bg-light text-dark">@((Model.NonMembers != null) ? Model.NonMembers.Count() : 0)</span>
+            </h2>
+
             <div class="table-responsive">
                 <table class="table table-hover table-striped">
                     <thead class="bg-primary text-white">
                         <tr>
-                            <th>Usuario</th>
+                            <th>Email</th>
                             <th class="text-center">Añadir</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @if (!Model.NonMembers.Any())
+                        @if (!Model.NonMembers?.Any() ?? true)
                         {
                             <tr><td colspan="2" class="text-center">No hay usuarios disponibles para agregar.</td></tr>
                         }
                         else
                         {
-                            @foreach (AppUsuario usuario in Model.NonMembers)
+                            @foreach (var user in Model.NonMembers)
                             {
                                 <tr>
-                                    <td class="align-middle">@usuario.UserName</td>
+                                    <td class="align-middle">@user.Email</td>
                                     <td class="align-middle text-center">
-                                        <input type="checkbox" name="AgregarIds" value="@usuario.Id">
+                                        <input type="checkbox" name="AgregarIds" value="@user.UserId" />
                                     </td>
                                 </tr>
                             }
@@ -53,29 +69,33 @@
                 </table>
             </div>
 
-            <!-- Eliminar Usuarios del Rol -->
-            <h2 class="bg-danger text-white p-2 rounded">Eliminar de @Model.Role.Name</h2>
+            <!-- Sección: Eliminar Usuarios del Rol -->
+            <h2 class="bg-danger text-white p-2 rounded">
+                Eliminar de @Model.RoleName
+                <span class="badge bg-light text-dark">@((Model.Members != null) ? Model.Members.Count() : 0)</span>
+            </h2>
+
             <div class="table-responsive">
                 <table class="table table-hover table-striped">
                     <thead class="bg-danger text-white">
                         <tr>
-                            <th>Usuario</th>
+                            <th>Email</th>
                             <th class="text-center">Eliminar</th>
                         </tr>
                     </thead>
                     <tbody>
-                        @if (!Model.Members.Any())
+                        @if (!Model.Members?.Any() ?? true)
                         {
-                            <tr><td colspan="2" class="text-center">No hay usuarios para eliminar.</td></tr>
+                            <tr class="no-usuarios-msg"><td colspan="2" class="text-center">No hay usuarios para eliminar.</td></tr>
                         }
                         else
                         {
-                            @foreach (AppUsuario usuario in Model.Members)
+                            @foreach (var user in Model.Members)
                             {
                                 <tr>
-                                    <td class="align-middle">@usuario.UserName</td>
+                                    <td class="align-middle">@user.Email</td>
                                     <td class="align-middle text-center">
-                                        <input type="checkbox" name="EliminarIds" value="@usuario.Id">
+                                        <input type="checkbox" name="EliminarIds" value="@user.UserId" />
                                     </td>
                                 </tr>
                             }
@@ -90,3 +110,34 @@
         </form>
     </div>
 </div>
+
+<script>
+    document.addEventListener("DOMContentLoaded", function () {
+        const filtroInput = document.getElementById("filtroUsuarios");
+
+        filtroInput.addEventListener("input", function () {
+            const filter = this.value.toLowerCase();
+
+            // Seleccionar todas las filas de ambas tablas (NonMembers y Members)
+            const filas = document.querySelectorAll("tbody tr");
+
+            filas.forEach(fila => {
+                const emailCell = fila.querySelector("td:first-child"); // Primera celda: Email
+                if (emailCell) {
+                    const email = emailCell.textContent.toLowerCase();
+                    const visible = email.includes(filter);
+
+                    // Si es una fila de usuarios (y no el mensaje de "no hay usuarios")
+                    if (fila.querySelector("input[type='checkbox']")) {
+                        fila.style.display = visible ? "" : "none";
+                    }
+                }
+            });
+        });
+    });
+
+    // Oculta el mensaje de "no hay usuarios" cuando hay texto en el filtro
+    document.querySelectorAll(".no-usuarios-msg").forEach(msg => {
+        msg.style.display = filter ? "none" : "";
+    });
+</script>

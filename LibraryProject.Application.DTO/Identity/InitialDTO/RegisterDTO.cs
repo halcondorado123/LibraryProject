@@ -13,7 +13,7 @@ namespace LibraryProject.Application.DTO.Identity.InitialDTO
 
         [Required(ErrorMessage = "La contraseña es obligatoria")]
         [DataType(DataType.Password)]
-        [StringLength(100, ErrorMessage = "La {0} debe tener al menos {2} caracteres.", MinimumLength = 6)]
+        [StringLength(100, ErrorMessage = "La {0} debe tener al menos {2} caracteres.", MinimumLength = 8)]
         public string Password { get; set; }
 
         [Required(ErrorMessage = "Debe confirmar su contraseña")]
@@ -23,8 +23,6 @@ namespace LibraryProject.Application.DTO.Identity.InitialDTO
 
         public int Edad { get; set; }
 
-        public float Salario { get; set; }
-
-        public int PaisId { get; set; }
+        public string Salario { get; set; }
     }
 }
