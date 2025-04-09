@@ -478,6 +478,30 @@
     <script>
         // Script principal para el sistema de reseñas
         $(document).ready(function () {
+                $("#searchInput").on("keyup", function () {
+                    var value = $(this).val().toLowerCase();
+                    var rows = $("#usuariosTable tbody tr");
+                    var noResults = $("#noResults");
+
+                    var found = false;
+                    rows.each(function () {
+                        var row = $(this);
+                        if (row.text().toLowerCase().indexOf(value) > -1) {
+                            row.show();
+                            found = true;
+                        } else {
+                            row.hide();
+                        }
+                    });
+
+                    if (found) {
+                        noResults.hide();
+                    } else {
+                        noResults.show();
+                    }
+                });
+            
+
             // Variables globales
 
             const bookId = $(this).data('BookId'); // o event.target.dataset.bookId si usas JS puro
