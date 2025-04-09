@@ -30,6 +30,9 @@ namespace LibraryProject.Modules
             // Repositorio y aplicación
             services.AddScoped<IBooksRepository, BooksRepository>();
             services.AddScoped<IBookApplication, BookApplication>();
+            services.AddAntiforgery(options => {
+                options.HeaderName = "RequestVerificationToken";
+            });
 
             return services;
         }

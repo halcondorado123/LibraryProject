@@ -1,12 +1,31 @@
-﻿using LibraryProject.Application.DTO.Library;
+﻿using AutoMapper;
+using LibraryProject.Application.DTO.Library;
+using LibraryProject.Application.Interface.Library;
+using LibraryProject.Domain.Entities.Library;
+using LibraryProject.Transversal.Common;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
+using Microsoft.EntityFrameworkCore;
+using System.Security.Claims;
 
 namespace LibraryProject.Controllers.Library
 {
+    [AutoValidateAntiforgeryToken]
     [Route("[controller]")]
     [ApiController] // Recomendado para APIs
     public class CommentsController : ControllerBase
     {
+
+        private readonly IMapper _mapper;
+        private readonly IBookApplication _bookApplication;
+
+        public CommentsController(IMapper mapper, IBookApplication bookApplication)
+        {
+            _mapper = mapper;
+            _bookApplication = bookApplication;
+        }
+
+
         // Endpoint para obtener comentarios por libro (versión de prueba)
         [HttpGet("ObtenerPorLibro/{libroId}")]
         public async Task<ActionResult<IEnumerable<CommentsUserDto>>> ObtenerPorLibroAsync(string libroId)
@@ -27,7 +46,6 @@ namespace LibraryProject.Controllers.Library
         {
                 new CommentsUserDto
         {
-            CommentaryId = 1,
             BookId = libroGuid,
             BookTitle = "Libro de Prueba",
             Rating = 5,
@@ -38,7 +56,6 @@ namespace LibraryProject.Controllers.Library
         },
         new CommentsUserDto
         {
-            CommentaryId = 2,
             BookId = libroGuid,
             BookTitle = "Libro de Prueba",
             Rating = 4,
@@ -49,7 +66,6 @@ namespace LibraryProject.Controllers.Library
         },
         new CommentsUserDto
         {
-            CommentaryId = 3,
             BookId = libroGuid,
             BookTitle = "Libro de Prueba",
             Rating = 3,
@@ -60,7 +76,6 @@ namespace LibraryProject.Controllers.Library
         },
         new CommentsUserDto
         {
-            CommentaryId = 4,
             BookId = libroGuid,
             BookTitle = "Libro de Prueba",
             Rating = 2,
@@ -71,7 +86,6 @@ namespace LibraryProject.Controllers.Library
         },
         new CommentsUserDto
         {
-            CommentaryId = 5,
             BookId = libroGuid,
             BookTitle = "Libro de Prueba",
             Rating = 5,
@@ -82,7 +96,6 @@ namespace LibraryProject.Controllers.Library
         },
         new CommentsUserDto
         {
-            CommentaryId = 6,
             BookId = libroGuid,
             BookTitle = "Libro de Prueba",
             Rating = 1,
@@ -94,7 +107,6 @@ namespace LibraryProject.Controllers.Library
 
             new CommentsUserDto
             {
-                CommentaryId = 7,
                 BookId = libroGuid, // Usamos el ID que recibimos
                 BookTitle = "Libro de Prueba",
                 Rating = 5,
@@ -105,7 +117,6 @@ namespace LibraryProject.Controllers.Library
             },
             new CommentsUserDto
             {
-                CommentaryId = 8,
                 BookId = libroGuid, // Usamos el ID que recibimos
                 BookTitle = "Libro de Prueba",
                 Rating = 4,
@@ -128,7 +139,6 @@ namespace LibraryProject.Controllers.Library
         {
             return new CommentsUserDto
             {
-                CommentaryId = 99,
                 BookId = Guid.NewGuid(),
                 BookTitle = "Ejemplo Automático",
                 Rating = 3,
@@ -138,5 +148,39 @@ namespace LibraryProject.Controllers.Library
                 UserName = "Usuario Ejemplo"
             };
         }
+
+
+        [HttpPost("CreateComment")]
+        [ValidateAntiForgeryToken] // Make sure this is here
+        public async Task<IActionResult> CreateComment([FromBody] CommentsUserDto model)
+        {
+            try
+            {
+                // Fill in missing fields if needed
+                model.CommentaryCreation = DateTime.Now;
+                var userId = User.FindFirstValue(ClaimTypes.NameIdentifier);
+                model.UserId = userId;
+                model.UserName = User.FindFirstValue(ClaimTypes.Name) ?? "Unknown";
+
+                var result = await _bookApplication.CreateCommentAsync(model, userId);
+                if (!result.IsSuccess)
+                    return BadRequest(new { message = result.Message });
+
+                return Ok(new { message = result.Message });
+            }
+            catch (Exception ex)
+            {
+                // Log the exception
+                return BadRequest(new { message = "Error interno del servidor" });
+            }
+        }
+
+
+
+
+
+
+
+
     }
 }

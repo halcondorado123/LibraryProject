@@ -100,9 +100,15 @@ namespace LibraryProject.Infraestructure.Repository.Library
 
             return await query.CountAsync();
         }
-    
 
 
+        public async Task<BookME> CreateCommentAsync(CommentsME entity)
+        {
+            await _dbContext.Comments.AddAsync(entity);
+            await _dbContext.SaveChangesAsync();
+
+            return await _dbContext.Books.FirstOrDefaultAsync(b => b.BookId == entity.BookId);
+        }
 
 
 

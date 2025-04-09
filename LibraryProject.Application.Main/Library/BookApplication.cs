@@ -5,6 +5,7 @@ using LibraryProject.Domain.Entities.Library;
 using LibraryProject.Domain.Interface.Library;
 using LibraryProject.Infraestructure.Interface.Library;
 using LibraryProject.Transversal.Common;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -40,6 +41,38 @@ namespace LibraryProject.Application.Services.Library
                 Data = orderedBooks
             };
         }
+
+
+        public async Task<ResponseGeneric<bool>> CreateCommentAsync(CommentsUserDto dto, string userId)
+        {
+            var response = new ResponseGeneric<bool>();
+
+            // Validación básica del comentario
+            if (string.IsNullOrWhiteSpace(dto.CommentaryText))
+            {
+                response.IsSuccess = false;
+                response.Data = false;
+                response.Message = "El comentario no puede estar vacío.";
+                return response;
+            }
+
+            // Mapeo de DTO a entidad
+            var entity = _mapper.Map<CommentsME>(dto);
+            entity.UserId = userId;
+            entity.CommentaryCreation = DateTime.UtcNow;
+
+            var result = await _booksDomain.CreateCommentAsync(entity);
+
+            // Estructura la respuesta
+            response.IsSuccess = result;
+            response.Data = result;
+            response.Message = result
+                ? "Comentario creado correctamente."
+                : "No se pudo guardar el comentario.";
+
+            return response;
+        }
+
 
 
 
@@ -225,44 +258,44 @@ namespace LibraryProject.Application.Services.Library
         }
 
 
-        public async Task<Response<BookDto>> CreateBookAsync(BookDto bookDto)
-        {
-            var response = new Response<BookDto>();
+        //public async Task<Response<BookDto>> CreateBookAsync(BookDto bookDto)
+        //{
+        //    var response = new Response<BookDto>();
 
-            try
-            {
-                if (bookDto == null)
-                {
-                    response.IsSuccess = false;
-                    response.Message = "Book data is required";
-                    return response;
-                }
+        //    try
+        //    {
+        //        if (bookDto == null)
+        //        {
+        //            response.IsSuccess = false;
+        //            response.Message = "Book data is required";
+        //            return response;
+        //        }
 
-                // Mapear DTO a entidad de dominio
-                var bookEntity = _mapper.Map<BookME>(bookDto);
+        //        // Mapear DTO a entidad de dominio
+        //        var bookEntity = _mapper.Map<BookME>(bookDto);
 
-                // Asignar valores generados
-                bookEntity.BookId = Guid.NewGuid();
-                bookEntity.RegistrationDate = DateTime.UtcNow;
+        //        // Asignar valores generados
+        //        bookEntity.BookId = Guid.NewGuid();
+        //        bookEntity.RegistrationDate = DateTime.UtcNow;
 
-                // Guardar libro en dominio/repositorio
-                var createdBook = await _booksDomain.CreateAsync(bookEntity);
+        //        // Guardar libro en dominio/repositorio
+        //        var createdBook = await _booksDomain.CreateAsync(bookEntity);
 
-                // Mapear la entidad guardada a DTO para la respuesta
-                response.Data = _mapper.Map<BookDto>(createdBook);
-                response.IsSuccess = true;
-                response.Message = "Book created successfully";
-                _logger.LogInformation("Book created: {BookTitle}", bookDto.BookTitle);
-            }
-            catch (Exception ex)
-            {
-                response.IsSuccess = false;
-                response.Message = "Error creating book";
-                _logger.LogError(ex, "Error in CreateBookAsync. Data: {@BookDto}", bookDto);
-            }
+        //        // Mapear la entidad guardada a DTO para la respuesta
+        //        response.Data = _mapper.Map<BookDto>(createdBook);
+        //        response.IsSuccess = true;
+        //        response.Message = "Book created successfully";
+        //        _logger.LogInformation("Book created: {BookTitle}", bookDto.BookTitle);
+        //    }
+        //    catch (Exception ex)
+        //    {
+        //        response.IsSuccess = false;
+        //        response.Message = "Error creating book";
+        //        _logger.LogError(ex, "Error in CreateBookAsync. Data: {@BookDto}", bookDto);
+        //    }
 
-            return response;
-        }
+        //    return response;
+        //}
 
 
         public async Task<Response<UpdateBookDto>> UpdateBookAsync(UpdateBookDto bookDto)

@@ -11,7 +11,6 @@ namespace LibraryProject.Application.DTO.Library
 {
     public class CommentsUserDto
     {
-        public int CommentaryId { get; set; }
         public Guid BookId { get; set; }
         public string BookTitle { get; set; } = string.Empty; // Para mostrar en la vista si lo necesitas
         public int Rating { get; set; }

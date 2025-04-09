@@ -57,6 +57,8 @@ namespace LibraryProject.Transversal.Mapper
             CreateMap<BookME, BookDto>()
             .ForMember(dest => dest.Author, opt =>
                 opt.MapFrom(src => $"{src.AuthorFirstName} {src.AuthorLastName}"));
+
+            CreateMap<CommentsUserDto, CommentsME>(); // O el nombre real de tu entidad de comentarios
         }
     }
 }

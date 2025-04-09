@@ -24,7 +24,13 @@ namespace LibraryProject.Domain.Core.Library
         {
             return await _unitOfWork.Books.GetFilteredCountAsync(bookTitle, authorFirstName, authorLastName, theme, publisher, place);
         }
-    
+
+        public async Task<bool> CreateCommentAsync(CommentsME entity)
+        {
+            var book = await _unitOfWork.Books.CreateCommentAsync(entity);
+            return book != null;
+        }
+
 
 
 
@@ -116,5 +122,7 @@ namespace LibraryProject.Domain.Core.Library
         {
             throw new NotImplementedException();
         }
+
+
     }
 }

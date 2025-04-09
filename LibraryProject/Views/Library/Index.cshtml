@@ -1,4 +1,4 @@
-@model IEnumerable<LibraryProject.Application.DTO.Library.BookDto>
+Ôªø@model IEnumerable<LibraryProject.Application.DTO.Library.BookDto>
 
 <!DOCTYPE html>
 <html lang="es">
@@ -177,7 +177,7 @@
         }
 
 
-        <!-- Calificacion modal-->
+        <!-- Calificacion modal-- >
         .star {
             font-size: 1.8rem;
             margin: 0 3px;
@@ -192,15 +192,15 @@
 
 
 
-        <!-- Modal reseÒas -->
+        <!-- Modal rese√±as -->
         .book-details {
             background-color: #f8f9fa;
             transition: all 0.3s ease;
         }
 
-            .book-details:hover {
-                box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
-            }
+        .book-details:hover {
+            box-shadow: 0 0.5rem 1rem rgba(0, 0, 0, 0.1);
+        }
 
         .reviews-section {
             margin-top: 1.5rem;
@@ -220,7 +220,6 @@
                 background-color: #adb5bd;
                 border-radius: 4px;
             }
-        
     </style>
 </head>
 <body>
@@ -233,14 +232,14 @@
                 </a>
             </div>
             <p style="text-align:center;">
-                En este mÛdulo se podr· realizar la b˙squeda personalizada de libros de interÈs, aplicando filtros por tÌtulo, autor, 
-                tem·tica, ciudad y editorial. Esta funcionalidad permite a los usuarios localizar con mayor precisiÛn los libros disponibles 
-                en el sistema, agilizando la consulta y mejorando la experiencia de uso. Todas las b˙squedas realizadas ser·n registradas para 
-                fines de an·lisis y seguimiento en nuestras bases de datos.
+                En este m√≥dulo se podr√° realizar la b√∫squeda personalizada de libros de inter√©s, aplicando filtros por t√≠tulo, autor,
+                tem√°tica, ciudad y editorial. Esta funcionalidad permite a los usuarios localizar con mayor precisi√≥n los libros disponibles
+                en el sistema, agilizando la consulta y mejorando la experiencia de uso. Todas las b√∫squedas realizadas ser√°n registradas para
+                fines de an√°lisis y seguimiento en nuestras bases de datos.
         </div>
 
         <div class="container">
-            <!-- Input de b˙squeda -->
+            <!-- Input de b√∫squeda -->
             <div class="input-container">
                 <input class="form-control my-input" id="searchInput" type="text" placeholder="Buscar...">
             </div>
@@ -272,9 +271,8 @@
 
                                     <!-- Columna de acciones -->
                                     <td class="text-nowrap">
-                                        <!-- BotÛn Ver -->
+                                        <!-- Bot√≥n Ver -->
                                         <button type="button"
-                                                data-bookid="11111111-1111-1111-1111-111111111111" 
                                                 class="btn btn-sm btn-outline-info me-1 show-reviews"
                                                 data-booktitle="@libro.BookTitle"
                                                 data-bs-toggle="modal"
@@ -289,15 +287,17 @@
                                             <i class="fas fa-eye"></i>
                                         </button>
 
-                                        <!-- BotÛn ReseÒa -->
+                                        <!-- Bot√≥n Rese√±a -->
                                         <button type="button"
-                                                class="btn btn-sm btn-warning me-1"
-                                                title="Agregar reseÒa"
-                                                onclick="openReviewModal('@libro.BookId', '@libro.BookTitle', '@libro.Author')">
+                                                class="btn btn-sm btn-warning me-1 add-review-btn"
+                                                title="Agregar rese√±a"
+                                                data-bookid="@libro.BookId"
+                                                data-booktitle="@libro.BookTitle"
+                                                data-author="@libro.Author">
                                             <i class="fas fa-star"></i>
                                         </button>
 
-                                        <!-- BotÛn Editar -->
+                                        <!-- Bot√≥n Editar -->
                                         <a class="btn btn-sm btn-outline-primary me-1"
                                            title="Editar libro"
                                            asp-action="Update"
@@ -305,7 +305,7 @@
                                             <i class="fas fa-edit"></i>
                                         </a>
 
-                                        <!-- BotÛn Eliminar -->
+                                        <!-- Bot√≥n Eliminar -->
                                         <button type="button"
                                                 class="btn btn-sm btn-outline-danger"
                                                 title="Eliminar libro"
@@ -327,17 +327,17 @@
                         </tbody>
 
                         <tr id="noResults" style="display: none;">
-                            <td colspan="6" class="text-center">No se encontraron resultados</td> <!-- AquÌ tambiÈn debe ser "colspan=3" -->
+                            <td colspan="6" class="text-center">No se encontraron resultados</td> <!-- Aqu√≠ tambi√©n debe ser "colspan=3" -->
                         </tr>
                     </table>
                     <nav aria-label="Page navigation">
                         <ul class="pagination justify-content-center">
-                            <!-- BotÛn "Anterior" -->
+                            <!-- Bot√≥n "Anterior" -->
                             <li class="page-item @(ViewBag.CurrentPage == 1 ? "disabled" : "")">
                                 <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage - 1)">Anterior</a>
                             </li>
 
-                            <!-- N˙meros de p·gina -->
+                            <!-- N√∫meros de p√°gina -->
                             @for (int i = 1; i <= ViewBag.TotalPages; i++)
                             {
                                 <li class="page-item @(ViewBag.CurrentPage == i ? "active" : "")">
@@ -345,14 +345,14 @@
                                 </li>
                             }
 
-                            <!-- BotÛn "Siguiente" -->
+                            <!-- Bot√≥n "Siguiente" -->
                             <li class="page-item @(ViewBag.CurrentPage == ViewBag.TotalPages ? "disabled" : "")">
                                 <a class="page-link" asp-action="Index" asp-route-page="@(ViewBag.CurrentPage + 1)">Siguiente</a>
                             </li>
                         </ul>
                     </nav>
 
-                    <!-- Modal para mostrar informaciÛn del libro y reseÒas -->
+                    <!-- Modal para mostrar informaci√≥n del libro y rese√±as -->
                     <div class="modal fade" id="bookModal" tabindex="-1" aria-labelledby="bookModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-lg modal-dialog-centered">
                             <div class="modal-content shadow">
@@ -361,7 +361,7 @@
                                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                                 </div>
                                 <div class="modal-body">
-                                    <!-- SecciÛn de informaciÛn del libro -->
+                                    <!-- Secci√≥n de informaci√≥n del libro -->
                                     <div class="book-details mb-4 p-3 border rounded">
                                         <div class="row">
                                             <div class="col-md-8">
@@ -386,15 +386,15 @@
                                         </div>
                                     </div>
 
-                                    <!-- SecciÛn de reseÒas -->
+                                    <!-- Secci√≥n de rese√±as -->
                                     <div class="reviews-section">
                                         <h5 class="border-bottom pb-2 mb-3">
-                                            <i class="fas fa-comments me-2"></i>ReseÒas
+                                            <i class="fas fa-comments me-2"></i>Rese√±as
                                             <span id="reviewsCount" class="badge bg-secondary ms-2">0</span>
                                         </h5>
                                         <ul class="list-group" id="reviewsList">
                                             <li class="list-group-item text-center py-4">
-                                                <i class="fas fa-spinner fa-spin me-2"></i>Cargando reseÒas...
+                                                <i class="fas fa-spinner fa-spin me-2"></i>Cargando rese√±as...
                                             </li>
                                         </ul>
                                     </div>
@@ -411,29 +411,28 @@
 
 
 
-                    <!-- Modal para agregar reseÒa -->
+                    <!-- Modal para agregar rese√±a -->
                     <div class="modal fade" id="reviewModal" tabindex="-1" aria-labelledby="reviewModalLabel" aria-hidden="true">
                         <div class="modal-dialog modal-dialog-centered">
                             <div class="modal-content shadow-lg">
                                 <div class="modal-header bg-warning text-dark">
                                     <h5 class="modal-title" id="reviewModalLabel">
-                                        <i class="fas fa-star me-2"></i>Agregar ReseÒa
+                                        <i class="fas fa-star me-2"></i>Agregar Rese√±a
                                     </h5>
                                     <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                                 </div>
                                 <div class="modal-body">
                                     <form id="reviewForm">
+                                        @Html.AntiForgeryToken()
                                         <input type="hidden" id="reviewBookId" />
-
-                                        <!-- TÌtulo y autor -->
+                                        <!-- T√≠tulo y autor -->
                                         <div class="mb-3">
                                             <h6><i class="fas fa-book me-1"></i><span id="reviewBookTitle"></span></h6>
                                             <p class="mb-0 text-muted"><i class="fas fa-user me-1"></i><span id="reviewBookAuthor"></span></p>
                                         </div>
-
-                                        <!-- CalificaciÛn con estrellas -->
+                                        <!-- Calificaci√≥n con estrellas -->
                                         <div class="mb-3 text-center">
-                                            <label class="form-label">CalificaciÛn:</label>
+                                            <label class="form-label">Calificaci√≥n:</label>
                                             <div id="starRating" class="fs-4 text-warning">
                                                 @for (int i = 1; i <= 5; i++)
                                                 {
@@ -441,17 +440,16 @@
                                                 }
                                             </div>
                                         </div>
-
                                         <!-- Comentario -->
                                         <div class="mb-3">
                                             <label for="reviewText" class="form-label">Comentario:</label>
-                                            <textarea class="form-control" id="reviewText" rows="4" placeholder="Escribe tu opiniÛn..."></textarea>
+                                            <textarea class="form-control" id="reviewText" rows="4" placeholder="Escribe tu opini√≥n..."></textarea>
                                         </div>
                                     </form>
                                 </div>
                                 <div class="modal-footer">
                                     <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cancelar</button>
-                                    <button type="button" class="btn btn-warning" onclick="submitReview()">Guardar ReseÒa</button>
+                                    <button type="button" class="btn btn-warning" onclick="submitReview()">Guardar Rese√±a</button>
                                 </div>
                             </div>
                         </div>
@@ -478,45 +476,49 @@
 
     <!-- Script para inicializar DataTables y manejar SweetAlert2 -->
     <script>
+        // Script principal para el sistema de rese√±as
         $(document).ready(function () {
             // Variables globales
-            let selectedRating = 0;
+
+            const bookId = $(this).data('BookId'); // o event.target.dataset.bookId si usas JS puro
+            const bookTitle = $(this).data('booktitle');
             const bookModal = new bootstrap.Modal('#bookModal');
             const reviewModal = new bootstrap.Modal('#reviewModal');
+            let selectedRating = 0;
 
-            // B˙squeda en tabla optimizada
-            $("#searchInput").on("keyup", debounce(function () {
-                const value = $(this).val().toLowerCase().trim();
-                let hasMatches = false;
 
-                $("#usuariosTable tbody tr").each(function () {
-                    const isVisible = $(this).text().toLowerCase().includes(value);
-                    $(this).toggle(isVisible);
-                    hasMatches = hasMatches || isVisible;
-                });
 
-                $("#noResults").toggle(!hasMatches);
-            }, 300));
 
-            // ConfirmaciÛn de eliminaciÛn
-            window.confirmDelete = function (userId) {
-                Swal.fire({
-                    title: "øEst·s seguro?",
-                    text: "Esta acciÛn no se puede deshacer",
-                    icon: "warning",
-                    showCancelButton: true,
-                    confirmButtonColor: "#d33",
-                    cancelButtonColor: "#3085d6",
-                    confirmButtonText: "SÌ, eliminar",
-                    cancelButtonText: "Cancelar"
-                }).then((result) => {
-                    if (result.isConfirmed) {
-                        document.getElementById(`deleteForm-${userId}`).submit();
-                    }
-                });
-            };
+            // Abre el modal y carga datos desde el bot√≥n
+            $(document).on('click', '.add-review-btn', function () {
+                const bookId = $(this).data('bookid');
+                const bookTitle = $(this).data('booktitle');
+                const author = $(this).data('author');
 
-            // Sistema de valoraciÛn con estrellas
+                // Pasa datos al modal
+                $('#reviewBookId').val(bookId);
+                $('#reviewBookTitle').text(bookTitle);
+                $('#reviewBookAuthor').text(author);
+
+                // Reinicia estrellas
+                selectedRating = 0;
+                highlightStars(0);
+
+                reviewModal.show();
+            });
+
+
+            function openReviewModal(bookId, bookTitle, author) {
+
+                // Si quieres mostrar en el modal el t√≠tulo del libro, puedes hacerlo aqu√≠:
+                $('#modalBookTitle').text(bookTitle);
+                $('#modalAuthor').text(author);
+
+                // Abrir modal (si no se abre autom√°ticamente con el bot√≥n)
+                $('#reviewModal').modal('show');
+            }
+
+            // Sistema de valoraci√≥n con estrellas
             function highlightStars(rating) {
                 $('#starRating .star').each(function () {
                     const value = parseInt($(this).data('value'));
@@ -536,7 +538,7 @@
                     selectedRating = parseInt($(this).data('value'));
                 });
 
-            // Modal de reseÒas
+            // Modal de rese√±as
             window.openReviewModal = function (bookId, bookTitle, author) {
                 selectedRating = 0;
                 $('#reviewBookId').val(bookId);
@@ -547,54 +549,97 @@
                 reviewModal.show();
             };
 
-            // EnvÌo de reseÒa mejorado
             window.submitReview = async function () {
-                const bookId = $('#reviewBookId').val();
+                const bookId = $('#reviewBookId').val(); // ‚úÖ Este viene del bot√≥n que diste clic
+                const bookTitle = $('#reviewBookTitle').text();
                 const review = $('#reviewText').val().trim();
 
+                // Validaci√≥n frontend
                 if (selectedRating === 0 || !review) {
-                    Swal.fire('Error', 'Por favor completa la calificaciÛn y el comentario', 'error');
+                    Swal.fire('Error', 'Por favor completa la calificaci√≥n y el comentario', 'error');
                     return;
                 }
 
+
+                // Preparar datos para coincidir con el DTO
+                const reviewData = {
+                    BookId: bookId,
+                    BookTitle: bookTitle,
+                    CommentaryText: review,
+                    Rating: selectedRating
+                };
+
+                console.log("BookId:", bookId);
+                console.log("BookTitle:", bookTitle);
+
                 try {
-                    const response = await fetch('/Comentarios/Crear', {
+                    // Token
+                    const token = $('input[name="__RequestVerificationToken"]').val();
+                    alert("Token obtenido: " + token);
+
+                    // Datos a enviar
+                    alert("Datos a enviar:\n" + JSON.stringify(reviewData));
+
+                    // Preparar headers
+                    const headers = {
+                        'Content-Type': 'application/json',
+                        'RequestVerificationToken': token
+                    };
+                    alert("Headers preparados:\n" + JSON.stringify(headers));
+
+                    // Hacer el fetch
+                    alert("Realizando fetch a /Comments/CreateComment...");
+
+                    const response = await fetch('/Comments/CreateComment', {
                         method: 'POST',
-                        headers: {
-                            'Content-Type': 'application/json',
-                            'RequestVerificationToken': $('input[name="__RequestVerificationToken"]').val()
-                        },
-                        body: JSON.stringify({
-                            BookId: bookId,
-                            Rating: selectedRating,
-                            CommentaryText: review
-                        })
+                        headers: headers,
+                        body: JSON.stringify(reviewData)
                     });
 
-                    if (response.ok) {
-                        Swal.fire('…xito', 'Tu reseÒa fue guardada', 'success');
-                        reviewModal.hide();
-                        // Recargar comentarios si est· abierto el modal
-                        if (bookModal._isShown) {
-                            const currentBookId = $('.show-reviews.active').data('bookid');
-                            loadBookReviews(currentBookId);
-                        }
-                    } else {
-                        throw new Error('Error en la respuesta');
+                    const result = await response.json();
+
+                    if (!response.ok) {
+                        alert('Error en la respuesta', response.status);
+                        throw new Error(result.message || 'Error al guardar el comentario');
                     }
+
+                    // √âxito
+                    Swal.fire('√âxito', result.message, 'success');
+                    reviewModal.hide();
+
+                    // Recargar comentarios si es necesario
+                    if (bookModal._isShown) {
+                        const currentBookId = $('.show-reviews.active').data('bookid');
+                        loadBookReviews(currentBookId);
+                    }
+
+                    // Limpiar formulario
+                    $('#reviewText').val('');
+                    selectedRating = 0;
+                    resetStarRating();
+
                 } catch (error) {
-                    Swal.fire('Error', 'No se pudo guardar la reseÒa', 'error');
                     console.error('Error:', error);
+                    Swal.fire('Error', error.message, 'error');
                 }
             };
 
-            // Carga de reseÒas optimizada
+            // Funci√≥n para resetear las estrellas
+            function resetStarRating() {
+                document.querySelectorAll('#starRating .star').forEach(star => {
+                    star.classList.remove('fas');
+                    star.classList.add('far');
+                });
+            }
+
+            // Carga de rese√±as optimizada - Actualizada para usar el endpoint correcto
             async function loadBookReviews(bookId) {
                 const $reviewsList = $('#reviewsList');
-                $reviewsList.html('<li class="list-group-item text-center py-3"><i class="fas fa-spinner fa-spin me-2"></i>Cargando reseÒas...</li>');
+                $reviewsList.html('<li class="list-group-item text-center py-3"><i class="fas fa-spinner fa-spin me-2"></i>Cargando rese√±as...</li>');
 
                 try {
-                    const response = await fetch(`/Comments/ObtenerPorLibro/${bookId}`);
+                    // Usamos el endpoint correcto seg√∫n el controlador
+                    const response = await fetch(`/Comments/GetBookComments/${bookId}`);
                     if (!response.ok) throw new Error(response.statusText);
 
                     const reviews = await response.json();
@@ -602,11 +647,11 @@
                     renderReviews(reviews);
                 } catch (error) {
                     console.error("Error:", error);
-                    $reviewsList.html('<li class="list-group-item text-danger">Error al cargar reseÒas</li>');
+                    $reviewsList.html('<li class="list-group-item text-danger">Error al cargar rese√±as</li>');
                 }
             }
 
-            // FunciÛn para renderizar reseÒas
+            // Funci√≥n para renderizar rese√±as
             function renderReviews(reviews) {
                 const $reviewsList = $('#reviewsList');
                 const $reviewsCount = $('#reviewsCount');
@@ -617,7 +662,7 @@
                 if (reviews.length === 0) {
                     $reviewsList.append(`
                         <li class="list-group-item text-center py-4 text-muted">
-                            <i class="far fa-comment-dots me-2"></i>No hay reseÒas a˙n
+                            <i class="far fa-comment-dots me-2"></i>No hay rese√±as a√∫n
                         </li>
                     `);
                     return;
@@ -625,7 +670,7 @@
 
                 reviews.forEach(review => {
                     const stars = Array.from({ length: 5 }, (_, i) =>
-                        `<i class="fas fa-star${i < review.rating ? '' : ' far'} text-warning me-1"></i>`
+                        `<i class="${i < review.rating ? 'fas' : 'far'} fa-star text-warning me-1"></i>`
                     ).join('');
 
                     const date = review.commentaryCreation
@@ -636,7 +681,7 @@
                         <li class="list-group-item">
                             <div class="d-flex justify-content-between align-items-start mb-2">
                                 <div>
-                                    <h6 class="mb-0"><i class="fas fa-user-circle me-2"></i>${review.userName || 'AnÛnimo'}</h6>
+                                    <h6 class="mb-0"><i class="fas fa-user-circle me-2"></i>${review.userName || 'An√≥nimo'}</h6>
                                     <small class="text-muted">${date}</small>
                                 </div>
                                 <div>${stars}</div>
@@ -647,14 +692,12 @@
                 });
             }
 
-            // Manejador de clic para mostrar informaciÛn del libro y reseÒas
+            // Manejador de clic para mostrar informaci√≥n del libro y rese√±as
             $(document).on('click', '.show-reviews', function () {
                 const $button = $(this);
                 $button.addClass('active');
 
-                const bookTitle = this.getAttribute("data-booktitle");
-                // Mostrar informaciÛn del libro
-
+                // Mostrar informaci√≥n del libro
                 $('#modalBookTitle').text($button.data('booktitle'));
                 $('#modalAuthor').text($button.data('author'));
                 $('#modalTheme').text($button.data('theme') || 'No especificado');
@@ -662,7 +705,7 @@
                 $('#modalPlace').text($button.data('place') || 'No especificado');
                 $('#modalObservations').text($button.data('observations') || 'Sin observaciones');
 
-                // Cargar reseÒas
+                // Cargar rese√±as
                 loadBookReviews($button.data('bookid'));
                 bookModal.show();
             });
@@ -671,17 +714,8 @@
             bookModal._element.addEventListener('hidden.bs.modal', function () {
                 $('.show-reviews').removeClass('active');
             });
-
-            // FunciÛn debounce para mejor performance
-            function debounce(func, wait) {
-                let timeout;
-                return function () {
-                    const context = this, args = arguments;
-                    clearTimeout(timeout);
-                    timeout = setTimeout(() => func.apply(context, args), wait);
-                };
-            }
         });
+        
     </script>
 </body>
 </html>
