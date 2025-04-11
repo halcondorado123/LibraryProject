@@ -8,6 +8,7 @@
 
   <ItemGroup>
     <PackageReference Include="AutoMapper" Version="14.0.0" />
+    <PackageReference Include="Microsoft.AspNetCore.Identity.UI" Version="8.0.14" />
   </ItemGroup>
 
   <ItemGroup>
@@ -15,10 +16,6 @@
     <ProjectReference Include="..\LibraryProject.Domain.Interface\LibraryProject.Domain.Interface.csproj" />
     <ProjectReference Include="..\LibraryProject.Infraestructure.Interface\LibraryProject.Infraestructure.Interface.csproj" />
     <ProjectReference Include="..\LibraryProject.Transversal.Common\LibraryProject.Transversal.Common.csproj" />
-  </ItemGroup>
-
-  <ItemGroup>
-    <Folder Include="Identity\" />
   </ItemGroup>
 
 </Project>

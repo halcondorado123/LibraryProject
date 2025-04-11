@@ -174,6 +174,8 @@
             justify-content: center; /* Alinea el contenido al final del contenedor */
         }
 
+
+
     </style>
 </head>
 <body>
@@ -229,16 +231,21 @@
                                         <!-- Formulario oculto para eliminar -->
                                         <form id="deleteForm-@Usuario.Id" asp-action="Delete" asp-route-id="@Usuario.Id" method="post" style="display: none;"></form>
 
+                                        <!-- Botón para abrir el modal -->
                                         <button type="button"
                                                 class="btn btn-sm btn-outline-info"
                                                 data-bs-toggle="modal"
                                                 data-bs-target="#userModal"
                                                 data-username="@Usuario.UserName"
                                                 data-email="@Usuario.Email"
-                                                data-edad="@Usuario.Edad">
+                                                data-firstname="@Usuario.FirstName"
+                                                data-lastname="@Usuario.LastName"
+                                                data-age="@Usuario.Age"
+                                                data-salary="@Usuario.Salary"
+                                                data-phone="@Usuario.PhoneNumber"
+                                                data-acceptedterms="@Usuario.AcceptedTerms">
                                             <i class="fas fa-eye"></i> Ver
                                         </button>
-
                                     </td>
                                 </tr>
                             }
@@ -269,29 +276,61 @@
                         </ul>
                     </nav>
 
-                    <!-- Modal para mostrar detalles del usuario -->
-                    <div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
-                        <div class="modal-dialog modal-dialog-centered">
+                    <!-- Modal -->
+                    <<div class="modal fade" id="userModal" tabindex="-1" aria-labelledby="userModalLabel" aria-hidden="true">
+                        <div class="modal-dialog modal-dialog-centered" style="max-width: 53%; height: 80vh;">
                             <div class="modal-content shadow-lg">
-                                <div class="modal-header bg-primary text-white">
+                                <div class="modal-header" style="background-color: #360130; color: white;">
                                     <h5 class="modal-title" id="userModalLabel">Detalles del Usuario</h5>
                                     <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Cerrar"></button>
                                 </div>
                                 <div class="modal-body">
                                     <div class="card">
                                         <div class="card-body">
-                                            <h5 class="card-title"><i class="fas fa-user me-2"></i><span id="modalUserName"></span></h5>
-                                            <p class="card-text"><i class="fas fa-envelope me-2"></i><span id="modalEmail"></span></p>
-                                            <p class="card-text"><i class="fas fa-birthday-cake me-2"></i><span id="modalEdad"></span> años</p>
+                                            <!-- Contenedor con texto y foto alineados a la izquierda y derecha en pantallas grandes, y a columna en pantallas pequeñas -->
+                                            <div class="d-flex flex-column flex-md-row">
+                                                <!-- Foto de Perfil (arriba en pantallas pequeñas, a la izquierda en pantallas grandes) -->
+                                                <div class="ms-3 d-flex justify-content-center justify-content-md-start align-items-start order-md-1 order-0 mb-4 mb-md-0" style="margin-left: -5px;">
+                                                    <img id="modalProfilePic" src="/img/user_7816987.png" alt="Foto de perfil" class="rounded-circle"
+                                                         style="width: 140px; height: 140px; object-fit: cover; border: 2px solid #6d2d67;">
+                                                </div>
+
+                                                <!-- Contenido de texto (izquierda en pantallas grandes, arriba en pantallas pequeñas) -->
+                                                <div class="flex-grow-1 order-md-0 order-1" style="padding-left: 5px;">
+                                                    <!-- Nombre de Usuario -->
+                                                    <h5 class="card-title"><i class="fas fa-user me-2"></i> <strong>Nombre de Usuario:</strong> <span id="modalUserName"></span></h5>
+
+                                                    <!-- Correo Electrónico -->
+                                                    <p class="card-text"><i class="fas fa-envelope me-2"></i> <strong>Correo Electrónico:</strong> <span id="modalEmail"></span></p>
+
+                                                    <!-- Nombre -->
+                                                    <p class="card-text"><i class="fas fa-id-card me-2"></i> <strong>Nombre:</strong> <span id="modalFirstName"></span></p>
+
+                                                    <!-- Apellido -->
+                                                    <p class="card-text"><i class="fas fa-id-card-alt me-2"></i> <strong>Apellido:</strong> <span id="modalLastName"></span></p>
+
+                                                    <!-- Edad -->
+                                                    <p class="card-text"><i class="fas fa-birthday-cake me-2"></i> <strong>Edad:</strong> <span id="modalEdad"></span> años</p>
+
+                                                    <!-- Salario -->
+                                                    <p class="card-text"><i class="fas fa-money-bill-wave me-2"></i> <strong>Salario:</strong> <span id="modalSalary"></span></p>
+
+                                                    <!-- Teléfono -->
+                                                    <p class="card-text"><i class="fas fa-phone-alt me-2"></i> <strong>Teléfono:</strong> <span id="modalPhone"></span></p>
+                                                </div>
+                                            </div>
                                         </div>
                                     </div>
                                 </div>
                                 <div class="modal-footer">
-                                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Cerrar</button>
+                                    <!-- Botón Cerrar Centrado -->
+                                    <button type="button" class="btn btn-secondary mx-auto" data-bs-dismiss="modal">Cerrar</button>
                                 </div>
                             </div>
                         </div>
                     </div>
+
+
 
 
             </div>
@@ -359,15 +398,28 @@
         }
 
         // Mostrar datos del usuario en el modal
-    var userModal = document.getElementById('userModal');
-    userModal.addEventListener('show.bs.modal', function (event) {
-        var button = event.relatedTarget;
+        var userModal = document.getElementById('userModal');
 
-        document.getElementById('modalUserName').textContent = button.getAttribute('data-username');
-        document.getElementById('modalEmail').textContent = button.getAttribute('data-email');
-        document.getElementById('modalEdad').textContent = button.getAttribute('data-edad');
-    });
+        // Cuando el modal se muestra
+        userModal.addEventListener('show.bs.modal', function (event) {
+            var button = event.relatedTarget; // Obtener el botón que abrió el modal
+            var username = button.getAttribute('data-username');
+            var email = button.getAttribute('data-email');
+            var firstname = button.getAttribute('data-firstname');
+            var lastname = button.getAttribute('data-lastname');
+            var age = button.getAttribute('data-age');
+            var salary = button.getAttribute('data-salary');
+            var phone = button.getAttribute('data-phone');
 
+            // Asignar los valores a los elementos dentro del modal
+            document.getElementById('modalUserName').textContent = username;
+            document.getElementById('modalEmail').textContent = email;
+            document.getElementById('modalFirstName').textContent = firstname;
+            document.getElementById('modalLastName').textContent = lastname;
+            document.getElementById('modalEdad').textContent = age;
+            document.getElementById('modalSalary').textContent = salary;
+            document.getElementById('modalPhone').textContent = phone;
+        });
     </script>
 </body>
 </html>

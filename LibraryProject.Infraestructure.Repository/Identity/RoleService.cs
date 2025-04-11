@@ -175,8 +175,6 @@ namespace LibraryProject.Infraestructure.Repository.Identity
         }
 
 
-
-
         public async Task<List<UserWithRoleDTO>> GetAllUsersWithRolesAsync()
         {
             var users = _userManager.Users.ToList();

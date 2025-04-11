@@ -19,17 +19,17 @@ namespace LibraryProject.Controllers.Identity
             _roleManager = roleManager;
             _codigoEspecial = configuration["RegistroInicial:CodigoAdministrador"];
         }
-        [AllowAnonymous]
-        public async Task<IActionResult> Index()
-        {
-            // Si ya hay usuarios, redirigir
-            if (_userManager.Users.Any())
-            {
-                return RedirectToAction("Login", "Account");
-            }
+        //[AllowAnonymous]
+        //public async Task<IActionResult> Index()
+        //{
+        //    // Si ya hay usuarios, redirigir
+        //    if (_userManager.Users.Any())
+        //    {
+        //        return RedirectToAction("Login", "Account");
+        //    }
 
-            return View();
-        }
+        //    return View();
+        //}
 
         [HttpPost]
         [AllowAnonymous]
