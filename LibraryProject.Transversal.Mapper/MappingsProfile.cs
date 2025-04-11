@@ -18,22 +18,26 @@ namespace LibraryProject.Transversal.Mapper
             CreateMap<AppUsuario, UserDTO>()
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
-                .ForMember(dest => dest.Salario, opt => opt.MapFrom(src => src.Salario))
-                .ForMember(dest => dest.Edad, opt => opt.MapFrom(src => src.Edad));
+                .ForMember(dest => dest.Salary, opt => opt.MapFrom(src => src.Salary))
+                .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.Age));
 
             // UserDTO -> AppUsuario
             CreateMap<UserDTO, AppUsuario>()
                 .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName))
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
-                .ForMember(dest => dest.Salario, opt => opt.MapFrom(src => src.Salario))
-                .ForMember(dest => dest.Edad, opt => opt.MapFrom(src => src.Edad));
+                .ForMember(dest => dest.Salary, opt => opt.MapFrom(src => src.Salary))
+                .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.Age));
 
             // LoginDTO <-> AppUsuario
             CreateMap<RegisterDTO, AppUsuario>()
-                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.Nombre)) // ← Aquí usamos el Nombre como UserName
+                .ForMember(dest => dest.UserName, opt => opt.MapFrom(src => src.UserName)) // ← Aquí usamos el Nombre como UserName
                 .ForMember(dest => dest.Email, opt => opt.MapFrom(src => src.Email))
-                .ForMember(dest => dest.Edad, opt => opt.MapFrom(src => src.Edad))
-                .ForMember(dest => dest.Salario, opt => opt.MapFrom(src => src.Salario));
+                .ForMember(dest => dest.FirstName, opt => opt.MapFrom(src => src.FirstName))
+                .ForMember(dest => dest.LastName, opt => opt.MapFrom(src => src.LastName))
+                .ForMember(dest => dest.Age, opt => opt.MapFrom(src => src.Age))
+                .ForMember(dest => dest.Salary, opt => opt.MapFrom(src => src.Salary))
+                .ForMember(dest => dest.PhoneNumber, opt => opt.MapFrom(src => src.PhoneNumber))
+                .ForMember(dest => dest.AcceptedTerms, opt => opt.MapFrom(src => src.AcceptedTerms));
 
 
             CreateMap<AppUsuario, LoginDTO>().ReverseMap();

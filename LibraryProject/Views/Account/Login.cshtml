@@ -1,10 +1,8 @@
 ﻿@model LibraryProject.Application.DTO.Identity.InitialDTO.LoginDTO
-@* @section Scripts {
-    <partial name="_ValidationScriptsPartial" />
-} *@
-
 <style>
-    /* Estilos para la pantalla dividida */
+    /* ================================================
+                       📦 ESTRUCTURA GENERAL: Pantalla dividida
+                    ================================================== */
     .split-container {
         display: flex;
         height: 100vh;
@@ -20,29 +18,47 @@
         background-repeat: repeat;
     }
 
-
     .right-column {
         flex: 1;
         display: flex;
         justify-content: center;
         align-items: center;
         background-color: white;
+        overflow-y: auto;
     }
 
-    .login-container {
+
+    /* ================================================
+                       🧱 CONTENEDORES (Login y Registro)
+                    ================================================== */
+    .login-container,
+    .register-container {
         width: 100%;
-        max-width: 350px;
+        max-width: 450px;
         text-align: center;
         padding: 30px;
         border-radius: 8px;
         box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+        margin: 40px 0;
     }
 
-        .login-container h2 {
-            margin-bottom: 30px;
+        .login-container h2,
+        .register-container h2 {
+            margin-bottom: 20px;
             color: #333;
         }
 
+        .register-container p {
+            margin-bottom: 30px;
+            color: #666;
+            font-size: 15px;
+            line-height: 1.5;
+        }
+
+
+    /* ================================================
+                       📝 FORMULARIOS
+                    ================================================== */
     .form-group {
         margin-bottom: 20px;
         text-align: left;
@@ -58,48 +74,638 @@
         padding: 10px;
         border-radius: 5px;
         border: 1px solid #ddd;
+        width: 100%;
     }
 
-    .btn-login {
+    .form-row {
+        display: flex;
+        gap: 15px;
+    }
+
+        .form-row .form-group {
+            flex: 1;
+        }
+
+
+    /* ================================================
+                       ✅ BOTONES
+                    ================================================== */
+    .btn-primary {
         width: 100%;
         padding: 12px;
-        background-color: #2f6328;
-        border-color: #2f6328;
+        background-color: #360130;
+        border-color: #61495e;
         font-size: 16px;
         font-weight: 500;
+        color: white;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        transition: all 0.3s ease;
     }
 
-        .btn-login:hover {
-            background-color: #3ed05b;
-            border-color: #3ed05b;
+        .btn-primary:hover {
+            background-color: #61495e;
+            border-color: #f7f2f7;
+        }
+
+    .btn-login {
+        font-weight: bold; /* Extra opcional */
+    }
+
+
+    /* ================================================
+                       ✅ CHECK DE TÉRMINOS (Solo en registro)
+                    ================================================== */
+    .terms-check {
+        display: flex;
+        align-items: flex-start;
+        margin-bottom: 20px;
+    }
+
+        .terms-check input {
+            margin-top: 5px;
+            margin-right: 10px;
+        }
+
+        .terms-check label {
+            font-size: 14px;
+            color: #666;
+            line-height: 1.4;
+        }
+
+        .terms-check a {
+            color: #2f6328;
+            text-decoration: none;
+        }
+
+            .terms-check a:hover {
+                text-decoration: underline;
+            }
+
+
+    /* ================================================
+                       🔙 ENLACES
+                    ================================================== */
+    .back-link {
+        margin-top: 20px;
+        display: block;
+        text-align: center;
+        color: #360130;
+        text-decoration: none;
+    }
+
+        .back-link:hover {
+            text-decoration: underline;
+            color: #61495e;
+        }
+
+    .login-container a {
+        color: #007bff;
+        font-weight: bold;
+    }
+
+        .login-container a:hover {
+            text-decoration: underline;
+        }
+
+
+    /* ================================================
+                       🌐 REDES SOCIALES
+                    ================================================== */
+    .social-footer {
+        margin-top: 30px;
+        border-top: 1px solid #eee;
+        padding-top: 20px;
+    }
+
+    .social-icons {
+        display: flex;
+        justify-content: center;
+        gap: 15px;
+        margin-top: 10px;
+    }
+
+        .social-icons a {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background-color: #f5f5f5;
+            color: #360130;
+            transition: all 0.3s ease;
+        }
+
+            .social-icons a:hover {
+                background-color: #61495e;
+                color: white;
+            }
+
+    .icon-back {
+        margin-right: 8px;
+    }
+    /* Estilos específicos para el modal de administrador */
+    .admin-modal {
+        border: 2px solid #360130;
+        border-radius: 10px;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.2);
+    }
+
+    .admin-modal-header {
+        background-color: #360130;
+        color: white;
+        border-bottom: none;
+        border-radius: 9px 9px 0 0; /* Un poco menos que el modal para que se vea el borde */
+    }
+
+    .admin-modal-footer {
+        border-top: 1px solid #eee;
+        background-color: #f8f9fa;
+        border-radius: 0 0 9px 9px;
+    }
+
+    .admin-alert {
+        border-left: 4px solid;
+        padding: 12px;
+        margin-bottom: 20px;
+        font-size: 0.9rem;
+    }
+
+    .alert-warning.admin-alert {
+        border-left-color: #ffc107;
+        background-color: rgba(255, 193, 7, 0.1);
+    }
+
+    .alert-danger.admin-alert {
+        border-left-color: #dc3545;
+        background-color: rgba(220, 53, 69, 0.1);
+    }
+
+    .alert-success.admin-alert {
+        border-left-color: #198754;
+        background-color: rgba(25, 135, 84, 0.1);
+    }
+
+    .alert-info.admin-alert {
+        border-left-color: #0dcaf0;
+        background-color: rgba(13, 202, 240, 0.1);
+    }
+
+    .btn-admin-primary {
+        background-color: #360130;
+        color: white;
+        border: none;
+        padding: 8px 16px;
+        transition: all 0.3s;
+    }
+
+        .btn-admin-primary:hover {
+            background-color: #4d0240;
+            transform: translateY(-1px);
+        }
+
+    /* Estilo para el enlace de administrador */
+    .login-footer {
+        position: fixed;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        padding: 15px 0;
+        background-color: rgba(255, 255, 255, 0.9);
+        border-top: 1px solid #eee;
+        z-index: 100;
+    }
+
+        /* Ajustes para el enlace de admin en el footer */
+        .login-footer .admin-link {
+            color: #6c757d;
+            font-size: 0.9rem;
+            text-decoration: none;
+            transition: all 0.2s;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+            .login-footer .admin-link:hover {
+                color: #360130;
+                background-color: rgba(54, 1, 48, 0.05);
+            }
+
+            .login-footer .admin-link i {
+                margin-right: 5px;
+            }
+
+    /* Asegurar que el contenido principal no quede oculto */
+    .login-container {
+        margin-bottom: 60px; /* Igual a la altura del footer */
+    }
+    /* Enlace de administrador en esquina inferior derecha */
+    .admin-access-link {
+        position: absolute;
+        bottom: 20px;
+        right: 20px;
+        z-index: 100;
+    }
+
+        .admin-access-link a {
+            color: #6c757d !important;
+            text-decoration: none;
+            transition: all 0.3s;
+            padding: 5px 10px;
+            border-radius: 4px;
+        }
+
+            .admin-access-link a:hover {
+                color: #360130 !important;
+                background-color: rgba(54, 1, 48, 0.05);
+            }
+
+    /* Estilos para el modal de recuperación de contraseña */
+    .reset-password-modal .modal-content {
+        border-radius: 10px;
+        border: none;
+        box-shadow: 0 5px 20px rgba(0, 0, 0, 0.15);
+    }
+
+    .reset-password-modal .modal-header {
+        background-color: #360130;
+        color: white;
+        border-radius: 10px 10px 0 0;
+        border-bottom: none;
+    }
+
+    .reset-password-modal .modal-footer {
+        border-top: 1px solid #eee;
+        background-color: #f8f9fa;
+        border-radius: 0 0 10px 10px;
+    }
+
+    /* Estilos para el enlace de olvidaste tu contraseña */
+    .forgot-password-link {
+        display: block;
+        text-align: right;
+        margin-bottom: 20px;
+        color: #6c757d;
+        font-size: 0.9rem;
+        text-decoration: none;
+        transition: all 0.2s;
+    }
+
+        .forgot-password-link:hover {
+            color: #360130;
+            text-decoration: underline;
+        }
+
+    /* Estilos para las alertas de SweetAlert2 personalizadas */
+    .swal2-popup {
+        border-radius: 10px;
+        font-family: inherit;
+    }
+
+    .swal2-title {
+        color: #333;
+        font-weight: 600;
+    }
+
+    .swal2-confirm {
+        background-color: #360130 !important;
+        border-radius: 5px !important;
+    }
+
+        .swal2-confirm:hover {
+            background-color: #4d0240 !important;
         }
 </style>
 
 <div class="split-container">
     <div class="left-column"></div>
+
     <div class="right-column">
         <div class="login-container">
             <h2>Iniciar Sesión</h2>
             <form asp-action="Login" method="post">
                 <input type="hidden" asp-for="ReturnUrl" />
+
                 <div class="form-group">
-                    <label asp-for="Email">Correo electrónico</label>
+                    <label asp-for="Email"></label>
                     <input asp-for="Email" class="form-control" placeholder="Ingresa tu email" />
-                    <span asp-validation-for="Email" class="text-danger"></span>
                 </div>
+
                 <div class="form-group">
-                    <label asp-for="Password">Contraseña</label>
+                    <label asp-for="Password"></label>
                     <input asp-for="Password" type="password" class="form-control" placeholder="Ingresa tu contraseña" />
-                    <span asp-validation-for="Password" class="text-danger"></span>
+                    <!-- Enlace de olvidaste contraseña -->
+                    <a href="#" class="forgot-password-link" data-bs-toggle="modal" data-bs-target="#forgotPasswordModal">
+                        <i class="fas fa-key fa-sm me-1"></i>¿Olvidaste tu contraseña?
+                    </a>
                 </div>
-                <div class="text-danger" asp-validation-summary="ModelOnly"></div>
+
+                <div class="text-danger" asp-validation-summary="All"></div>
+
                 <button class="btn btn-primary btn-login mt-3" type="submit">Iniciar Sesión</button>
             </form>
+
+            <!-- Enlace a registro -->
+            <div class="mt-4 text-center">
+                <p>
+                    ¿No tienes una cuenta?
+                    <a href="#" class="text-decoration-none" data-bs-toggle="modal" data-bs-target="#registerModal">Regístrate aquí</a>
+                </p>
+            </div>
+
+            <!-- Footer redes sociales -->
+            <div class="social-footer">
+                <small>Conéctate con nosotros:</small>
+                <div class="social-icons">
+                    <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                    <a href="#" title="Twitter"><i class="fab fa-twitter"></i></a>
+                    <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
+                    <a href="https://www.linkedin.com/in/jhonattanhalconcasallasfelipe/" title="LinkedIn"><i class="fab fa-linkedin-in"></i></a>
+                    <a href="https://github.com/halcondorado123" title="GitHub"><i class="fab fa-github"></i></a> <!-- NUEVO -->
+                </div>
+            </div>
         </div>
     </div>
+
+    <!-- Modal: Registro de usuario normal -->
+    <div class="modal fade" id="registerModal" tabindex="-1" aria-labelledby="registerModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered" style="max-width: 600px;">
+            <div class="modal-content border-0 bg-transparent shadow-none">
+                <div class="modal-body p-0">
+                    @await Html.PartialAsync("./Register/_RegisterPartial", new LibraryProject.Application.DTO.Identity.InitialDTO.RegisterDTO())
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Modal: Recuperación de contraseña -->
+    <div class="modal fade reset-password-modal" id="forgotPasswordModal" tabindex="-1" aria-labelledby="forgotPasswordModalLabel" aria-hidden="true">
+        <div class="modal-dialog modal-dialog-centered">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title" id="forgotPasswordModalLabel">
+                        <i class="fas fa-unlock-alt me-2"></i>Recuperar Contraseña
+                    </h5>
+                    <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+                </div>
+                <div class="modal-body">
+                    <div class="admin-alert alert alert-info">
+                        <i class="fas fa-info-circle me-2"></i>
+                        Ingresa tu correo electrónico y te enviaremos instrucciones para recuperar tu contraseña.
+                    </div>
+                    <form id="resetPasswordForm">
+                        <div class="mb-3">
+                            <label for="resetEmail" class="form-label">Correo Electrónico</label>
+                            <input type="email" class="form-control" id="resetEmail" placeholder="Ingresa tu correo electrónico" required>
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                        <i class="fas fa-times me-1"></i> Cancelar
+                    </button>
+                    <button type="button" id="sendResetLinkBtn" class="btn btn-admin-primary">
+                        <i class="fas fa-paper-plane me-1"></i> Enviar Enlace
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Administrador -->
+<div class="modal fade" id="adminModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content admin-modal">
+            <div class="modal-header admin-modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-user-shield me-2"></i>Acceso de Administrador
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="admin-alert alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Esta área es solo para personal autorizado
+                </div>
+                <form id="adminAuthForm">
+                    <div class="mb-3">
+                        <label for="adminCode" class="form-label">Código de Administrador</label>
+                        <input type="password" class="form-control" id="adminCode" placeholder="Ingresa el código secreto">
+                    </div>
+                    <div class="mb-3">
+                        <label for="adminPin" class="form-label">PIN de Acceso</label>
+                        <input type="password" class="form-control" id="adminPin" placeholder="Ingresa tu PIN de 6 dígitos">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer admin-modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i> Cancelar
+                </button>
+                <button type="button" id="verifyAdminBtn" class="btn btn-admin-primary">
+                    <i class="fas fa-check-circle me-1"></i> Verificar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Registro de Administrador -->
+<div class="modal fade" id="adminRegisterModal" tabindex="-1" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content admin-modal">
+            <div class="modal-header admin-modal-header">
+                <h5 class="modal-title">
+                    <i class="fas fa-user-shield me-2"></i>Registro de Administrador
+                </h5>
+                <button type="button" class="btn-close btn-close-white" data-bs-dismiss="modal" aria-label="Close"></button>
+            </div>
+            <div class="modal-body">
+                <div class="admin-alert alert alert-warning">
+                    <i class="fas fa-exclamation-triangle me-2"></i>
+                    Esta área es solo para personal autorizado
+                </div>
+                <form id="adminRegisterForm">
+                    <!-- Sección de Información Personal -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="username" class="form-label">Nombre de Usuario*</label>
+                                <input type="text" class="form-control" id="username" name="username"
+                                       placeholder="Ej: admin.juan" required>
+                                <div class="invalid-feedback">Por favor ingresa un nombre de usuario válido</div>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="email" class="form-label">Correo Electrónico*</label>
+                                <input type="email" class="form-control" id="email" name="email"
+                                       placeholder="tu@email.com" required>
+                                <div class="invalid-feedback">Ingresa un correo electrónico válido</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="firstName" class="form-label">Nombre*</label>
+                                <input type="text" class="form-control" id="firstName" name="firstName"
+                                       placeholder="Tu nombre" required>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="lastName" class="form-label">Apellido*</label>
+                                <input type="text" class="form-control" id="lastName" name="lastName"
+                                       placeholder="Tu apellido" required>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sección de Seguridad -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="password" class="form-label">Contraseña*</label>
+                                <input type="password" class="form-control" id="password" name="password"
+                                       placeholder="Mínimo 8 caracteres" required minlength="8">
+                                <small class="form-text text-muted">Debe contener al menos 8 caracteres</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="confirmPassword" class="form-label">Confirmar Contraseña*</label>
+                                <input type="password" class="form-control" id="confirmPassword"
+                                       placeholder="Repite tu contraseña" required>
+                                <div class="invalid-feedback">Las contraseñas no coinciden</div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Sección de Autorización -->
+                    <div class="row mb-3">
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="authCode" class="form-label">Código de Autorización*</label>
+                                <input type="password" class="form-control" id="authCode" name="authCode"
+                                       placeholder="Código proporcionado" required>
+                                <small class="form-text text-muted">Solo para personal autorizado</small>
+                            </div>
+                        </div>
+                        <div class="col-md-6">
+                            <div class="form-group">
+                                <label for="adminPin" class="form-label">PIN de Seguridad*</label>
+                                <input type="password" class="form-control" id="adminPin" name="adminPin"
+                                       placeholder="6 dígitos numéricos" pattern="\d{6}" required>
+                                <small class="form-text text-muted">Debe ser exactamente 6 dígitos</small>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Términos y Condiciones -->
+                    <div class="mb-3 form-check">
+                        <input type="checkbox" class="form-check-input" id="acceptTerms" required>
+                        <label class="form-check-label" for="acceptTerms">
+                            Acepto los <a href="#" data-bs-toggle="modal" data-bs-target="#termsModal">Términos y Condiciones</a> y
+                            la <a href="#" data-bs-toggle="modal" data-bs-target="#privacyModal">Política de Privacidad</a>
+                        </label>
+                        <div class="invalid-feedback">Debes aceptar los términos y condiciones</div>
+                    </div>
+
+                    <div class="d-grid gap-2">
+                        <button type="submit" class="btn btn-admin-primary">
+                            <i class="fas fa-user-shield me-2"></i> Registrar Administrador
+                        </button>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer admin-modal-footer">
+                <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">
+                    <i class="fas fa-times me-1"></i> Cancelar
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- Enlace de administrador en esquina inferior derecha -->
+<div class="admin-access-link">
+    <a href="#" id="adminModalTrigger"
+       class="text-muted small"
+       data-bs-toggle="tooltip"
+       data-bs-placement="left"
+       title="¿Eres administrador?">
+        <i class="fas fa-user-shield me-1"></i>
+        <span class="d-none d-sm-inline">¿Eres administrador?</span>
+    </a>
 </div>
 
 @section Scripts {
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate/1.19.5/jquery.validate.min.js"></script>
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jquery-validate-unobtrusive/4.0.0/jquery.validate.unobtrusive.min.js"></script>
+    <!-- Font Awesome para íconos -->
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.4/css/all.min.css" rel="stylesheet">
+    <!-- SweetAlert2 para alertas más bonitas -->
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    
+    <script>
+        $(document).ready(function () {
+            // Inicializar modales y tooltips
+            const adminModal = new bootstrap.Modal('#adminModal');
+            new bootstrap.Tooltip('#adminModalTrigger', {
+                placement: 'left'
+            });
+
+            // Manejador del clic para el acceso de administrador
+            $('#adminModalTrigger').click(function (e) {
+                e.preventDefault();
+                adminModal.show();
+            });
+            
+            // Manejador para el envío de enlace de recuperación de contraseña
+            $('#sendResetLinkBtn').click(function() {
+                const email = $('#resetEmail').val();
+                
+                // Validación básica de email
+                if (!email) { 
+                    Swal.fire({
+                        title: 'Error',
+                        text: 'Por favor, ingresa un correo electrónico válido',
+                        icon: 'error',
+                        confirmButtonColor: '#360130'
+                    });
+                    return;
+                }
+                
+                // Aquí iría la lógica para enviar el correo de recuperación
+                // Por ahora, solo mostramos el SweetAlert
+                
+                // Cerrar el modal de recuperación
+                $('#forgotPasswordModal').modal('hide');
+                
+                // Mostrar SweetAlert de confirmación
+                Swal.fire({
+                    title: '¡Correo enviado!',
+                    text: `Hemos enviado un enlace de recuperación a ${email}. Por favor revisa tu bandeja de entrada.`,
+                    icon: 'success',
+                    confirmButtonColor: '#360130',
+                    timer: 5000,
+                    timerProgressBar: true
+                });
+                
+                // Limpiar el formulario
+                $('#resetPasswordForm')[0].reset();
+            });
+            
+            // Validación del formulario de recuperación de contraseña
+            $('#resetPasswordForm').on('submit', function(e) {
+                e.preventDefault();
+                $('#sendResetLinkBtn').click();
+            });
+        });
+    </script>
 }

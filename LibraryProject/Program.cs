@@ -1,43 +1,75 @@
-using LibraryProject.Configurations.Identity;
+锘縰sing LibraryProject.Configurations.Identity;
+using LibraryProject.Domain.Entities.UserAttributes;
 using LibraryProject.Modules;
+using LibraryProject.Modules.Extensions;
 using LibraryProject.Transversal.Mapper;
+using Microsoft.AspNetCore.Identity;
 
 var builder = WebApplication.CreateBuilder(args);
 
 // -------------------------------------------------------------------
-// 1. Configuraci髇 de servicios b醩icos (MVC + Razor Pages)
+// 1. Configuraci贸n de servicios b谩sicos (MVC + Razor Pages)
 // -------------------------------------------------------------------
 builder.Services.AddControllersWithViews();
 builder.Services.AddRazorPages();
 
 // -------------------------------------------------------------------
-// 2. Inyecci髇 de servicios y m骴ulos personalizados
+// 2. Inyecci贸n de servicios y m贸dulos personalizados
 // -------------------------------------------------------------------
+// Configuraci贸n del DbContext y servicios relacionados con la base de datos
 builder.Services
-    .AddCustomDbContexts(builder.Configuration)       // DbContext y cadenas de conexi髇
-    .AddCustomIdentity();                              // Identity Core + EF
+    .AddCustomDbContexts(builder.Configuration);  // Configura DbContext y cadenas de conexi贸n
+
+// Configuraci贸n de Identity y servicios relacionados con autenticaci贸n y autorizaci贸n
+// Configura Identity Core + EF
+// Configuraci贸n de contrase帽a, email, etc.
+// Pol铆ticas de autorizaci贸n personalizadas
+// Conexi贸n con EF Core
+// Proveedores de token para autenticaci贸n
+
+// 1. Registro de Identity (esto devuelve un IdentityBuilder)
+var identityBuilder = builder.Services
+    .AddIdentity<AppUsuario, IdentityRole>(options =>
+    {
+        // Puedes mover estas opciones a AddCustomIdentitySettings si quieres
+        options.SignIn.RequireConfirmedEmail = true;
+    });
+
+// 2. Agrega EF Core y token providers
+identityBuilder
+    .AddEntityFrameworkStores<AppDbContext>()
+    .AddDefaultTokenProviders();
+
+// 3. Ahora aplica tus configuraciones personalizadas
+builder.Services.AddCustomIdentitySettings();
+builder.Services.AddIdentityPolicies();
+
+builder.Services.AddInjection(builder.Configuration); // 猬咃笍 Esto va despu茅s
 
 builder.Services
-    .AddCustomIdentitySettings()                      // Configuraci髇 de contrase馻, email, etc.
-    .AddIdentityPolicies();                           // Pol韙icas de autorizaci髇
-
-builder.Services
-    .AddInjection(builder.Configuration)              // Inyecci髇 de servicios: repositorios, dominio, etc.
+    .AddInjection(builder.Configuration)              // Inyecci贸n de servicios: repositorios, dominio, etc.
     .AddAuthorizationHandlers();                      // IAuthorizationHandler personalizados
 
 builder.Services.AddAutoMapper(typeof(MappingsProfile)); // AutoMapper
-
+builder.Services.AddSwaggerServices(); // << Aqu铆 agregas Swagger
+builder.Services.AddEmailSender();
 
 
 // -------------------------------------------------------------------
-// 3. Construcci髇 de la aplicaci髇
+// 3. Construcci贸n de la aplicaci贸n
 // -------------------------------------------------------------------
 var app = builder.Build();
 
 // -------------------------------------------------------------------
 // 4. Middleware HTTP
 // -------------------------------------------------------------------
-if (!app.Environment.IsDevelopment())
+if (app.Environment.IsDevelopment())
+{
+    app.UseDeveloperExceptionPage(); // P谩gina de excepciones de desarrollo
+    app.UseSwagger();  // Si est谩s usando Swagger
+    app.UseSwaggerUI();
+}
+else
 {
     app.UseExceptionHandler("/Error");
     app.UseHsts();
@@ -55,9 +87,13 @@ app.UseAuthorization();
 // -------------------------------------------------------------------
 app.MapRazorPages();
 
+if (app.Environment.IsDevelopment())
+{
+    app.UseSwaggerMiddleware(); // << Aqu铆 activas el middleware
+}
+
 app.MapControllerRoute(
     name: "default",
     pattern: "{controller=Home}/{action=Index}/{id?}");
-
 
 app.Run();
